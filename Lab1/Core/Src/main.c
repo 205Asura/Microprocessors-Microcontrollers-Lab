@@ -54,20 +54,16 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int LED_Pins[12] = {
+    LED1_Pin, LED2_Pin, LED3_Pin, LED4_Pin,
+    LED5_Pin, LED6_Pin, LED7_Pin, LED8_Pin,
+    LED9_Pin, LED10_Pin, LED11_Pin, LED12_Pin
+};
+
 void clearAllClock()
 {
-    HAL_GPIO_WritePin(GPIOA, LED1_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED2_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED3_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED4_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED5_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED6_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED7_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED8_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED9_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED10_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED11_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOA, LED12_Pin, GPIO_PIN_RESET);
+    for (int i = 0; i <= 11; i++)
+    	HAL_GPIO_WritePin(GPIOA, LED_Pins[i], RESET);
 }
 
 /* USER CODE END 0 */
