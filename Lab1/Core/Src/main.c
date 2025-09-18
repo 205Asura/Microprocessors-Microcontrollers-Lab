@@ -63,6 +63,7 @@ static void MX_GPIO_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -97,44 +98,43 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	  if (count == 0)
+	  	{
+	  		HAL_GPIO_WritePin(GPIOA, LED_RED1_Pin, RESET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_YELLOW1_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_GREEN1_Pin, SET);
 
-	if (count == 0)
-	{
-		HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOA, LED_YELLOW_1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_RED2_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_YELLOW2_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_GREEN2_Pin, RESET);
+	  	}
+	  	else if (count == 3)
+	  	{
 
-		HAL_GPIO_WritePin(GPIOA, LED_RED_2_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_YELLOW_2_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_GREEN_2_Pin, RESET);
-	}
-	else if (count == 3)
-	{
+	  		HAL_GPIO_WritePin(GPIOA, LED_RED2_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_YELLOW2_Pin, RESET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_GREEN2_Pin, SET);
+	  	}
+	  	else if (count == 5)
+	  	{
+	  		HAL_GPIO_WritePin(GPIOA, LED_YELLOW1_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_RED1_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_GREEN1_Pin, RESET);
 
-		HAL_GPIO_WritePin(GPIOA, LED_RED_2_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_YELLOW_2_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOA, LED_GREEN_2_Pin, SET);
-	}
-	else if (count == 5)
-	{
-		HAL_GPIO_WritePin(GPIOA, LED_YELLOW_1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin, RESET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_YELLOW2_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_RED2_Pin, RESET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_GREEN2_Pin, SET);
+	  	}
+	  	else if (count == 8)
+	  	{
+	  		HAL_GPIO_WritePin(GPIOA, LED_YELLOW1_Pin, RESET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_RED1_Pin, SET);
+	  		HAL_GPIO_WritePin(GPIOA, LED_GREEN1_Pin, SET);
+	  	}
 
-		HAL_GPIO_WritePin(GPIOA, LED_YELLOW_2_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_RED_2_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOA, LED_GREEN_2_Pin, SET);
-	}
-	else if (count == 8)
-	{
-		HAL_GPIO_WritePin(GPIOA, LED_YELLOW_1_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOA, LED_GREEN_1_Pin, SET);
-	}
-
-	HAL_Delay(1000);
-	count++;
-	if (count == 10) count = 0;
+	  	HAL_Delay(1000);
+	  	count++;
+	  	if (count == 10) count = 0;
 
     /* USER CODE BEGIN 3 */
   }
@@ -161,6 +161,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -184,23 +185,49 @@ void SystemClock_Config(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_RED_1_Pin|LED_YELLOW_1_Pin|LED_GREEN_1_Pin|LED_RED_2_Pin
-                          |LED_YELLOW_2_Pin|LED_GREEN_2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_RED1_Pin|LED_YELLOW1_Pin|LED_GREEN1_Pin|LED_RED2_Pin
+                          |LED_YELLOW2_Pin|LED_GREEN2_Pin|A2_Pin|B2_Pin
+                          |C2_Pin|D2_Pin|E2_Pin|F2_Pin
+                          |G2_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : LED_RED_1_Pin LED_YELLOW_1_Pin LED_GREEN_1_Pin LED_RED_2_Pin
-                           LED_YELLOW_2_Pin LED_GREEN_2_Pin */
-  GPIO_InitStruct.Pin = LED_RED_1_Pin|LED_YELLOW_1_Pin|LED_GREEN_1_Pin|LED_RED_2_Pin
-                          |LED_YELLOW_2_Pin|LED_GREEN_2_Pin;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, A_Pin|B_Pin|C_Pin|D_Pin
+                          |E_Pin|F_Pin|G_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : LED_RED1_Pin LED_YELLOW1_Pin LED_GREEN1_Pin LED_RED2_Pin
+                           LED_YELLOW2_Pin LED_GREEN2_Pin A2_Pin B2_Pin
+                           C2_Pin D2_Pin E2_Pin F2_Pin
+                           G2_Pin */
+  GPIO_InitStruct.Pin = LED_RED1_Pin|LED_YELLOW1_Pin|LED_GREEN1_Pin|LED_RED2_Pin
+                          |LED_YELLOW2_Pin|LED_GREEN2_Pin|A2_Pin|B2_Pin
+                          |C2_Pin|D2_Pin|E2_Pin|F2_Pin
+                          |G2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : A_Pin B_Pin C_Pin D_Pin
+                           E_Pin F_Pin G_Pin */
+  GPIO_InitStruct.Pin = A_Pin|B_Pin|C_Pin|D_Pin
+                          |E_Pin|F_Pin|G_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -221,8 +248,7 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
@@ -238,5 +264,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
