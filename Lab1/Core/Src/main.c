@@ -1,21 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -32,6 +31,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -43,16 +43,49 @@
 
 /* USER CODE BEGIN PV */
 
+int LED_Pins[12] = {
+    LED1_Pin, LED2_Pin, LED3_Pin, LED4_Pin,
+    LED5_Pin, LED6_Pin, LED7_Pin, LED8_Pin,
+    LED9_Pin, LED10_Pin, LED11_Pin, LED12_Pin
+};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void setAllClock()
+{
+	for (int i = 0; i < 12; i++)
+	{
+		HAL_GPIO_WritePin(GPIOA, LED_Pins[i], GPIO_PIN_SET);
+	}
+}
+
+void clearAllClock()
+{
+	for (int i = 0; i < 12; i++)
+	{
+		HAL_GPIO_WritePin(GPIOA, LED_Pins[i], GPIO_PIN_RESET);
+	}
+}
+
+void setNumberOnClock(int num)
+{
+    HAL_GPIO_WritePin(GPIOA, LED_Pins[num], GPIO_PIN_SET);
+}
+
+void clearNumberOnClock(int num)
+{
+    HAL_GPIO_WritePin(GPIOA, LED_Pins[num], GPIO_PIN_RESET);
+}
 
 /* USER CODE END 0 */
 
@@ -62,6 +95,7 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -83,18 +117,35 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+
+    int current_led = 0;
+    setAllClock();
+
+    while(1)
+    {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+    	if(current_led < 12)
+		{
+			clearNumberOnClock(current_led);
+			current_led++;
+		}
+    	else
+    	{
+    		setAllClock();
+			current_led = 0;
+		}
+
+		HAL_Delay(250);
+    }
   /* USER CODE END 3 */
 }
 
@@ -118,6 +169,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -133,6 +185,42 @@ void SystemClock_Config(void)
   }
 }
 
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, LED1_Pin|LED2_Pin|LED3_Pin|LED4_Pin
+                          |LED5_Pin|LED6_Pin|LED7_Pin|LED8_Pin
+                          |LED9_Pin|LED10_Pin|LED11_Pin|LED12_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : LED1_Pin LED2_Pin LED3_Pin LED4_Pin
+                           LED5_Pin LED6_Pin LED7_Pin LED8_Pin
+                           LED9_Pin LED10_Pin LED11_Pin LED12_Pin */
+  GPIO_InitStruct.Pin = LED1_Pin|LED2_Pin|LED3_Pin|LED4_Pin
+                          |LED5_Pin|LED6_Pin|LED7_Pin|LED8_Pin
+                          |LED9_Pin|LED10_Pin|LED11_Pin|LED12_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
+}
+
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
@@ -144,15 +232,15 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+    /* User can add his own implementation to report the HAL error return state
+     */
+    __disable_irq();
+    while(1)
+    {
+    }
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
@@ -163,10 +251,9 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    /* User can add his own implementation to report the file name and line
+       number, ex: printf("Wrong parameters value: file %s on line %d\r\n",
+       file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
