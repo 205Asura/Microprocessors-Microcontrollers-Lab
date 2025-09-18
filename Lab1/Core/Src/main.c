@@ -91,35 +91,38 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int count = 0;
   while (1)
   {
     /* USER CODE END WHILE */
 
-	// Turn on the red LED and turn off the yellow and green LEDs
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);  // Red LED ON
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);  // Yellow LED OFF
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);  // Green LED OFF
-
-	// Delay for 5 seconds (RED light duration)
-	HAL_Delay(5000);  // 5000 ms = 5 seconds
-
-	// Turn off the red LED and turn on the yellow LED
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);  // Red LED OFF
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);  // Yellow LED ON
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);  // Green LED OFF
-
-	// Delay for 2 seconds (YELLOW light duration)
-	HAL_Delay(2000);  // 2000 ms = 2 seconds
-
-	// Turn off the yellow LED and turn on the green LED
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);  // Red LED OFF
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);  // Yellow LED OFF
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);  // Green LED ON
-
-	// Delay for 3 seconds (GREEN light duration)
-	HAL_Delay(3000);  // 3000 ms = 3 seconds
 
     /* USER CODE BEGIN 3 */
+	  if (count == 0)
+	  	{
+	  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);  // Red LED ON
+	  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);  // Yellow LED OFF
+	  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+	  	}  // Green LED OFF
+	  	else if (count == 5)
+	  	{
+	  	// Turn off the red LED and turn on the yellow LED
+	  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);  // Red LED OFF
+	  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);  // Yellow LED ON
+	  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);  // Green LED OFF
+	  	}
+	  	else if (count == 7)
+	  	{
+	  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);  // Red LED OFF
+	  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);  // Yellow LED OFF
+	  	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);  // Green LED ON
+	  	}
+	  	// Delay for 3 seconds (GREEN light duration)
+	  	count++;
+
+	  	if (count == 10)
+	  		count = 0;
+	  	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
