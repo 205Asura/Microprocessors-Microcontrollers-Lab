@@ -43,7 +43,7 @@
 
 /* USER CODE BEGIN PV */
 
-uint8_t segmentMap[10] = {
+int segment[10] = {
 	0b1111110, // 0
 	0b0110000, // 1
 	0b1101101, // 2
@@ -70,7 +70,7 @@ static void MX_GPIO_Init(void);
 
 void display7SEG(int num)
 {
-	uint8_t bitmask = segmentMap[num];
+	int bitmask = segment[num];
 
 	HAL_GPIO_WritePin(GPIOB, A_Pin, (bitmask & (1 << 6)) ? RESET : SET);
 	HAL_GPIO_WritePin(GPIOB, B_Pin, (bitmask & (1 << 5)) ? RESET : SET);

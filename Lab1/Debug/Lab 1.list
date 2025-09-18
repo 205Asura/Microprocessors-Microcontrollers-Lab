@@ -9,43 +9,43 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .rodata       00000024  080012bc  080012bc  000022bc  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  080012e0  080012e0  00003018  2**0
+  3 .ARM.extab    00000000  080012e0  080012e0  00003034  2**0
                   CONTENTS
-  4 .ARM          00000000  080012e0  080012e0  00003018  2**0
+  4 .ARM          00000000  080012e0  080012e0  00003034  2**0
                   CONTENTS
-  5 .preinit_array 00000000  080012e0  080012e0  00003018  2**0
+  5 .preinit_array 00000000  080012e0  080012e0  00003034  2**0
                   CONTENTS, ALLOC, LOAD, DATA
   6 .init_array   00000004  080012e0  080012e0  000022e0  2**2
                   CONTENTS, ALLOC, LOAD, DATA
   7 .fini_array   00000004  080012e4  080012e4  000022e4  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         00000018  20000000  080012e8  00003000  2**2
+  8 .data         00000034  20000000  080012e8  00003000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          00000020  20000018  08001300  00003018  2**2
+  9 .bss          00000020  20000034  0800131c  00003034  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  20000038  08001300  00003038  2**0
+ 10 ._user_heap_stack 00000604  20000054  0800131c  00003054  2**0
                   ALLOC
- 11 .ARM.attributes 00000029  00000000  00000000  00003018  2**0
+ 11 .ARM.attributes 00000029  00000000  00000000  00003034  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000295d  00000000  00000000  00003041  2**0
+ 12 .debug_info   00002945  00000000  00000000  0000305d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00000e61  00000000  00000000  0000599e  2**0
+ 13 .debug_abbrev 00000e61  00000000  00000000  000059a2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000003d8  00000000  00000000  00006800  2**3
+ 14 .debug_aranges 000003d8  00000000  00000000  00006808  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 000002bf  00000000  00000000  00006bd8  2**0
+ 15 .debug_rnglists 000002bf  00000000  00000000  00006be0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0001561e  00000000  00000000  00006e97  2**0
+ 16 .debug_macro  0001561e  00000000  00000000  00006e9f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   000049be  00000000  00000000  0001c4b5  2**0
+ 17 .debug_line   000049be  00000000  00000000  0001c4bd  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00079b37  00000000  00000000  00020e73  2**0
+ 18 .debug_str    00079b48  00000000  00000000  00020e7b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0009a9aa  2**0
+ 19 .comment      00000043  00000000  00000000  0009a9c3  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00000d54  00000000  00000000  0009a9f0  2**2
+ 20 .debug_frame  00000d54  00000000  00000000  0009aa08  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000056  00000000  00000000  0009b744  2**0
+ 21 .debug_line_str 0000006a  00000000  00000000  0009b75c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -62,7 +62,7 @@ Disassembly of section .text:
  800011e:	2301      	movs	r3, #1
  8000120:	7023      	strb	r3, [r4, #0]
  8000122:	bd10      	pop	{r4, pc}
- 8000124:	20000018 	.word	0x20000018
+ 8000124:	20000034 	.word	0x20000034
  8000128:	00000000 	.word	0x00000000
  800012c:	080012a4 	.word	0x080012a4
 
@@ -75,7 +75,7 @@ Disassembly of section .text:
  800013a:	f3af 8000 	nop.w
  800013e:	bd08      	pop	{r3, pc}
  8000140:	00000000 	.word	0x00000000
- 8000144:	2000001c 	.word	0x2000001c
+ 8000144:	20000038 	.word	0x20000038
  8000148:	080012a4 	.word	0x080012a4
 
 0800014c <display7SEG>:
@@ -89,15 +89,14 @@ void display7SEG(int num)
  800014e:	b084      	sub	sp, #16
  8000150:	af00      	add	r7, sp, #0
  8000152:	6078      	str	r0, [r7, #4]
-	uint8_t bitmask = segmentMap[num];
+	int bitmask = segment[num];
  8000154:	4a31      	ldr	r2, [pc, #196]	@ (800021c <display7SEG+0xd0>)
  8000156:	687b      	ldr	r3, [r7, #4]
- 8000158:	4413      	add	r3, r2
- 800015a:	781b      	ldrb	r3, [r3, #0]
- 800015c:	73fb      	strb	r3, [r7, #15]
+ 8000158:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
+ 800015c:	60fb      	str	r3, [r7, #12]
 
 	HAL_GPIO_WritePin(GPIOB, A_Pin, (bitmask & (1 << 6)) ? RESET : SET);
- 800015e:	7bfb      	ldrb	r3, [r7, #15]
+ 800015e:	68fb      	ldr	r3, [r7, #12]
  8000160:	f003 0340 	and.w	r3, r3, #64	@ 0x40
  8000164:	2b00      	cmp	r3, #0
  8000166:	bf0c      	ite	eq
@@ -109,7 +108,7 @@ void display7SEG(int num)
  8000172:	482b      	ldr	r0, [pc, #172]	@ (8000220 <display7SEG+0xd4>)
  8000174:	f000 fc74 	bl	8000a60 <HAL_GPIO_WritePin>
 	HAL_GPIO_WritePin(GPIOB, B_Pin, (bitmask & (1 << 5)) ? RESET : SET);
- 8000178:	7bfb      	ldrb	r3, [r7, #15]
+ 8000178:	68fb      	ldr	r3, [r7, #12]
  800017a:	f003 0320 	and.w	r3, r3, #32
  800017e:	2b00      	cmp	r3, #0
  8000180:	bf0c      	ite	eq
@@ -121,7 +120,7 @@ void display7SEG(int num)
  800018c:	4824      	ldr	r0, [pc, #144]	@ (8000220 <display7SEG+0xd4>)
  800018e:	f000 fc67 	bl	8000a60 <HAL_GPIO_WritePin>
 	HAL_GPIO_WritePin(GPIOB, C_Pin, (bitmask & (1 << 4)) ? RESET : SET);
- 8000192:	7bfb      	ldrb	r3, [r7, #15]
+ 8000192:	68fb      	ldr	r3, [r7, #12]
  8000194:	f003 0310 	and.w	r3, r3, #16
  8000198:	2b00      	cmp	r3, #0
  800019a:	bf0c      	ite	eq
@@ -133,7 +132,7 @@ void display7SEG(int num)
  80001a6:	481e      	ldr	r0, [pc, #120]	@ (8000220 <display7SEG+0xd4>)
  80001a8:	f000 fc5a 	bl	8000a60 <HAL_GPIO_WritePin>
 	HAL_GPIO_WritePin(GPIOB, D_Pin, (bitmask & (1 << 3)) ? RESET : SET);
- 80001ac:	7bfb      	ldrb	r3, [r7, #15]
+ 80001ac:	68fb      	ldr	r3, [r7, #12]
  80001ae:	f003 0308 	and.w	r3, r3, #8
  80001b2:	2b00      	cmp	r3, #0
  80001b4:	bf0c      	ite	eq
@@ -145,7 +144,7 @@ void display7SEG(int num)
  80001c0:	4817      	ldr	r0, [pc, #92]	@ (8000220 <display7SEG+0xd4>)
  80001c2:	f000 fc4d 	bl	8000a60 <HAL_GPIO_WritePin>
 	HAL_GPIO_WritePin(GPIOB, E_Pin, (bitmask & (1 << 2)) ? RESET : SET);
- 80001c6:	7bfb      	ldrb	r3, [r7, #15]
+ 80001c6:	68fb      	ldr	r3, [r7, #12]
  80001c8:	f003 0304 	and.w	r3, r3, #4
  80001cc:	2b00      	cmp	r3, #0
  80001ce:	bf0c      	ite	eq
@@ -157,7 +156,7 @@ void display7SEG(int num)
  80001da:	4811      	ldr	r0, [pc, #68]	@ (8000220 <display7SEG+0xd4>)
  80001dc:	f000 fc40 	bl	8000a60 <HAL_GPIO_WritePin>
 	HAL_GPIO_WritePin(GPIOB, F_Pin, (bitmask & (1 << 1)) ? RESET : SET);
- 80001e0:	7bfb      	ldrb	r3, [r7, #15]
+ 80001e0:	68fb      	ldr	r3, [r7, #12]
  80001e2:	f003 0302 	and.w	r3, r3, #2
  80001e6:	2b00      	cmp	r3, #0
  80001e8:	bf0c      	ite	eq
@@ -169,7 +168,7 @@ void display7SEG(int num)
  80001f4:	480a      	ldr	r0, [pc, #40]	@ (8000220 <display7SEG+0xd4>)
  80001f6:	f000 fc33 	bl	8000a60 <HAL_GPIO_WritePin>
 	HAL_GPIO_WritePin(GPIOB, G_Pin, (bitmask & (1 << 0)) ? RESET : SET);
- 80001fa:	7bfb      	ldrb	r3, [r7, #15]
+ 80001fa:	68fb      	ldr	r3, [r7, #12]
  80001fc:	f003 0301 	and.w	r3, r3, #1
  8000200:	2b00      	cmp	r3, #0
  8000202:	bf0c      	ite	eq
@@ -808,13 +807,13 @@ LoopFillZerobss:
   ldr r0, =_sdata
  800047c:	20000000 	.word	0x20000000
   ldr r1, =_edata
- 8000480:	20000018 	.word	0x20000018
+ 8000480:	20000034 	.word	0x20000034
   ldr r2, =_sidata
  8000484:	080012e8 	.word	0x080012e8
   ldr r2, =_sbss
- 8000488:	20000018 	.word	0x20000018
+ 8000488:	20000034 	.word	0x20000034
   ldr r4, =_ebss
- 800048c:	20000038 	.word	0x20000038
+ 800048c:	20000054 	.word	0x20000054
 
 08000490 <ADC1_2_IRQHandler>:
  * @retval : None
@@ -934,9 +933,9 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
  800050e:	3708      	adds	r7, #8
  8000510:	46bd      	mov	sp, r7
  8000512:	bd80      	pop	{r7, pc}
- 8000514:	2000000c 	.word	0x2000000c
- 8000518:	20000014 	.word	0x20000014
- 800051c:	20000010 	.word	0x20000010
+ 8000514:	20000028 	.word	0x20000028
+ 8000518:	20000030 	.word	0x20000030
+ 800051c:	2000002c 	.word	0x2000002c
 
 08000520 <HAL_IncTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -961,8 +960,8 @@ __weak void HAL_IncTick(void)
  8000536:	46bd      	mov	sp, r7
  8000538:	bc80      	pop	{r7}
  800053a:	4770      	bx	lr
- 800053c:	20000014 	.word	0x20000014
- 8000540:	20000034 	.word	0x20000034
+ 800053c:	20000030 	.word	0x20000030
+ 8000540:	20000050 	.word	0x20000050
 
 08000544 <HAL_GetTick>:
   * @note  This function is declared as __weak to be overwritten in case of other
@@ -981,7 +980,7 @@ __weak uint32_t HAL_GetTick(void)
  800054e:	46bd      	mov	sp, r7
  8000550:	bc80      	pop	{r7}
  8000552:	4770      	bx	lr
- 8000554:	20000034 	.word	0x20000034
+ 8000554:	20000050 	.word	0x20000050
 
 08000558 <HAL_Delay>:
   *       implementations in user file.
@@ -1034,7 +1033,7 @@ __weak void HAL_Delay(uint32_t Delay)
  8000596:	46bd      	mov	sp, r7
  8000598:	bd80      	pop	{r7, pc}
  800059a:	bf00      	nop
- 800059c:	20000014 	.word	0x20000014
+ 800059c:	20000030 	.word	0x20000030
 
 080005a0 <__NVIC_SetPriorityGrouping>:
            In case of a conflict between priority grouping and available
@@ -3109,8 +3108,8 @@ if (((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_PCLK1) == RCC_CLOCKTYPE_PCLK
  8001154:	40022000 	.word	0x40022000
  8001158:	40021000 	.word	0x40021000
  800115c:	080012bc 	.word	0x080012bc
- 8001160:	2000000c 	.word	0x2000000c
- 8001164:	20000010 	.word	0x20000010
+ 8001160:	20000028 	.word	0x20000028
+ 8001164:	2000002c 	.word	0x2000002c
 
 08001168 <HAL_RCC_GetSysClockFreq>:
   *         right SYSCLK value. Otherwise, any configuration based on this function will be incorrect.
@@ -3285,7 +3284,7 @@ static void RCC_Delay(uint32_t mdelay)
  800123e:	46bd      	mov	sp, r7
  8001240:	bc80      	pop	{r7}
  8001242:	4770      	bx	lr
- 8001244:	2000000c 	.word	0x2000000c
+ 8001244:	20000028 	.word	0x20000028
  8001248:	10624dd3 	.word	0x10624dd3
 
 0800124c <memset>:
