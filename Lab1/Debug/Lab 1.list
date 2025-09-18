@@ -37,15 +37,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  000155a6  00000000  00000000  00006d98  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000497f  00000000  00000000  0001c33e  2**0
+ 17 .debug_line   00004982  00000000  00000000  0001c33e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00079986  00000000  00000000  00020cbd  2**0
+ 18 .debug_str    00079986  00000000  00000000  00020cc0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0009a643  2**0
+ 19 .comment      00000043  00000000  00000000  0009a646  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00000d30  00000000  00000000  0009a688  2**2
+ 20 .debug_frame  00000d30  00000000  00000000  0009a68c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000006a  00000000  00000000  0009b3b8  2**0
+ 21 .debug_line_str 0000006a  00000000  00000000  0009b3bc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -117,9 +117,9 @@ int main(void)
   int count = 0;
  800015e:	2300      	movs	r3, #0
  8000160:	607b      	str	r3, [r7, #4]
+  while (1)
   {
     /* USER CODE END WHILE */
-
 
     /* USER CODE BEGIN 3 */
 	  if (count == 0)
@@ -259,6 +259,7 @@ void SystemClock_Config(void)
     Error_Handler();
  8000232:	f000 f84b 	bl	80002cc <Error_Handler>
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -314,6 +315,9 @@ static void MX_GPIO_Init(void)
  8000276:	605a      	str	r2, [r3, #4]
  8000278:	609a      	str	r2, [r3, #8]
  800027a:	60da      	str	r2, [r3, #12]
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -354,6 +358,9 @@ static void MX_GPIO_Init(void)
  80002b4:	4804      	ldr	r0, [pc, #16]	@ (80002c8 <MX_GPIO_Init+0x60>)
  80002b6:	f000 fa03 	bl	80006c0 <HAL_GPIO_Init>
 
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
 }
  80002ba:	bf00      	nop
  80002bc:	3718      	adds	r7, #24
@@ -398,6 +405,7 @@ void HAL_MspInit(void)
  80002d8:	b480      	push	{r7}
  80002da:	b085      	sub	sp, #20
  80002dc:	af00      	add	r7, sp, #0
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
