@@ -127,7 +127,7 @@ int main(void)
 
     int current_led = 0;
     setAllClock();
-
+    HAL_Delay(250);
     while(1)
     {
     /* USER CODE END WHILE */
