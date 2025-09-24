@@ -70,6 +70,18 @@ int segments[10] =
 		0b1111111, // eight
 		0b1111011  // nine
 };
+int led_buffer[4] = {0, 0, 0, 0};
+int hour = 15, minute = 8, second = 50;
+int timer0_counter = 0;
+int timer0_flag = 0;
+int TIMER_CYCLE = 10;
+
+int timer1_counter = 100;
+int timer1_flag = 0;
+int timer2_counter = 10;
+int timer2_flag = 0;
+
+int led_index = 0;
 
 int SEG_Pins[7] =
 {
@@ -85,7 +97,6 @@ void display7Seg(int num)
 		HAL_GPIO_WritePin(GPIOB, SEG_Pins[i], bitmask & (1 << (6 - i)) ? RESET : SET);
 
 }
-int led_buffer[4] = {0, 0, 0, 0};
 void update7SEG(int index)
 {
 	switch (index)
@@ -122,7 +133,6 @@ void update7SEG(int index)
 			break;
 	}
 }
-int hour = 15, minute = 8, second = 50;
 void updateClockBuffer()
 {
 	if (hour <= 9)
@@ -146,6 +156,21 @@ void updateClockBuffer()
 		led_buffer[2] = minute / 10;
 		led_buffer[3] = minute % 10;
 	}
+}
+
+void setTimer0(int duration)
+{
+	timer0_counter = duration / TIMER_CYCLE;
+	timer0_flag = 0;
+}
+
+void timer_run()
+{
+	if (timer0_counter > 0)
+		timer0_counter--;
+	if (timer0_counter == 0)
+		timer0_flag = 1;
+
 }
 
 /* USER CODE END 0 */
@@ -188,12 +213,19 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-
+  setTimer0(1000);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  if (timer0_flag == 1)
+	  {
+		  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+		  setTimer0(2000);
+	  }
+
+
 	  second++;
 	  if (second >= 60)
 	  {
@@ -346,32 +378,32 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-int counter2 = 10;
 // Active High EN Signal
-int num = 1;
 int en[4] = {0, 0, 0, 0};
 
 
-int i = 0;
-int counter1 = 100;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	counter1--;
-	counter2--;
-	if (counter1 == 0)
+	timer_run();
+	if (timer1_counter > 0)
+		timer1_counter--;
+	if (timer2_counter > 0)
+		timer2_counter--;
+	if (timer1_counter == 0)
 	{
-		HAL_GPIO_TogglePin(GPIOA, LED_Pin);
+		// HAL_GPIO_TogglePin(GPIOA, LED_Pin);
 		HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
-		counter1 = 100;
+		timer1_counter = 100;
 	}
-	if (counter2 == 0)
+	if (timer2_counter == 0)
 	{
-		update7SEG(i++);
-		counter2 = 10;
+		update7SEG(led_index++);
+		if (led_index == 4)
+			led_index = 0;
+		timer2_counter = 10;
 	}
-	if (i == 4)
-		i = 0;
+
 }
 /* USER CODE END 4 */
 
