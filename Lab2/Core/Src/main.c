@@ -158,20 +158,7 @@ void updateClockBuffer()
 	}
 }
 
-void setTimer0(int duration)
-{
-	timer0_counter = duration / TIMER_CYCLE;
-	timer0_flag = 0;
-}
 
-void timer_run()
-{
-	if (timer0_counter > 0)
-		timer0_counter--;
-	if (timer0_counter == 0)
-		timer0_flag = 1;
-
-}
 
 /* USER CODE END 0 */
 
@@ -213,19 +200,11 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  setTimer0(1000);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  if (timer0_flag == 1)
-	  {
-		  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-		  setTimer0(2000);
-	  }
-
-
 	  second++;
 	  if (second >= 60)
 	  {
@@ -385,14 +364,13 @@ int en[4] = {0, 0, 0, 0};
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	timer_run();
 	if (timer1_counter > 0)
 		timer1_counter--;
 	if (timer2_counter > 0)
 		timer2_counter--;
 	if (timer1_counter == 0)
 	{
-		// HAL_GPIO_TogglePin(GPIOA, LED_Pin);
+		HAL_GPIO_TogglePin(GPIOA, LED_Pin);
 		HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
 		timer1_counter = 100;
 	}
