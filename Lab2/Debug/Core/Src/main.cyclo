@@ -1,0 +1,15 @@
+../Core/Src/main.c:92:6:display7Seg	2
+../Core/Src/main.c:100:6:update7SEG	5
+../Core/Src/main.c:136:6:updateClockBuffer	3
+../Core/Src/main.c:161:6:setTimer0	1
+../Core/Src/main.c:167:6:setTimer1	1
+../Core/Src/main.c:173:6:timer_run	5
+../Core/Src/main.c:215:6:clearLEDMatrix	2
+../Core/Src/main.c:224:6:rotateLeft	2
+../Core/Src/main.c:234:6:updateLEDMatrix	17
+../Core/Src/main.c:296:5:main	7
+../Core/Src/main.c:381:6:SystemClock_Config	3
+../Core/Src/main.c:418:13:MX_TIM2_Init	4
+../Core/Src/main.c:463:13:MX_GPIO_Init	1
+../Core/Src/main.c:524:6:HAL_TIM_PeriodElapsedCallback	1
+../Core/Src/main.c:537:6:Error_Handler	1
