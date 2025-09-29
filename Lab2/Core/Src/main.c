@@ -78,7 +78,7 @@ int TIMER_CYCLE = 10;
 
 int timer1_counter = 100;
 int timer1_flag = 0;
-int timer2_counter = 10;
+int timer2_counter = 100;
 int timer2_flag = 0;
 
 int led_index = 0;
@@ -379,7 +379,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		update7SEG(led_index++);
 		if (led_index == 4)
 			led_index = 0;
-		timer2_counter = 10;
+		timer2_counter = 100;
 	}
 
 }
