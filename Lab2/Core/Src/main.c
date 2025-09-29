@@ -230,7 +230,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+  setTimer0(1000);
   while (1)
   {
     /* USER CODE END WHILE */

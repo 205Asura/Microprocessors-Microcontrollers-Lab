@@ -63,8 +63,8 @@ all: main-build
 main-build: Lab2-original.elf secondary-outputs
 
 # Tool invocations
-Lab2-original.elf Lab2-original.map: $(OBJS) $(USER_OBJS) D:\Projects\STM32\Lab2-original\STM32F103C6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Lab2-original.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Projects\STM32\Lab2-original\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab2-original.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Lab2-original.elf Lab2-original.map: $(OBJS) $(USER_OBJS) D:\Source\ Code\STM32\Microprocessors-Microcontrollers-Lab\Lab2\STM32F103C6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Lab2-original.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\Source Code\STM32\Microprocessors-Microcontrollers-Lab\Lab2\STM32F103C6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Lab2-original.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
