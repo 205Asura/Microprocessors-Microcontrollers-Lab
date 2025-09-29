@@ -193,14 +193,14 @@ void timer_run()
 const int MAX_LED_MATRIX = 8;
 int index_led_matrix = 0;
 uint8_t matrix_buffer[8] = {
-		0x3C, // 00111100
-	    0x42, // 01000010
-	    0x81, // 10000001
-	    0x81, // 10000001
-	    0xFF, // 11111111
-	    0x81, // 10000001
-	    0x81, // 10000001
-	    0x81  // 10000001
+		0b00011000,
+		0b00111100,
+		0b01100110,
+		0b01100110,
+		0b01111110,
+		0b01111110,
+		0b01100110,
+		0b01100110
 };
 
 int ENM_Pins[8] = {
@@ -340,7 +340,7 @@ int main(void)
 			  index_led_matrix = 0;
 		  if (led_index == 4)
 			  led_index = 0;
-		  setTimer0(1000);
+		  setTimer0(10);
 	  }
 
 
