@@ -37,15 +37,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_macro  000162e8  00000000  00000000  0000d3b5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00009976  00000000  00000000  0002369d  2**0
+ 17 .debug_line   00009978  00000000  00000000  0002369d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0008216a  00000000  00000000  0002d013  2**0
+ 18 .debug_str    0008216a  00000000  00000000  0002d015  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000af17d  2**0
+ 19 .comment      00000043  00000000  00000000  000af17f  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000269c  00000000  00000000  000af1c0  2**2
+ 20 .debug_frame  0000269c  00000000  00000000  000af1c4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000004e  00000000  00000000  000b185c  2**0
+ 21 .debug_line_str 0000004e  00000000  00000000  000b1860  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -519,10 +519,10 @@ int main(void)
  8000434:	681b      	ldr	r3, [r3, #0]
  8000436:	2b01      	cmp	r3, #1
  8000438:	d113      	bne.n	8000462 <main+0x52>
-	  	  {
-	  		  updateClockBuffer();
+	  {
+		  updateClockBuffer();
  800043a:	f7ff ff47 	bl	80002cc <updateClockBuffer>
-	  		  update7SEG(led_index++);
+		  update7SEG(led_index++);
  800043e:	4b25      	ldr	r3, [pc, #148]	@ (80004d4 <main+0xc4>)
  8000440:	681b      	ldr	r3, [r3, #0]
  8000442:	1c5a      	adds	r2, r3, #1
@@ -530,19 +530,19 @@ int main(void)
  8000446:	600a      	str	r2, [r1, #0]
  8000448:	4618      	mov	r0, r3
  800044a:	f7ff feb3 	bl	80001b4 <update7SEG>
-	  		  if (led_index == 4)
+		  if (led_index == 4)
  800044e:	4b21      	ldr	r3, [pc, #132]	@ (80004d4 <main+0xc4>)
  8000450:	681b      	ldr	r3, [r3, #0]
  8000452:	2b04      	cmp	r3, #4
  8000454:	d102      	bne.n	800045c <main+0x4c>
-	  		  	led_index = 0;
+			led_index = 0;
  8000456:	4b1f      	ldr	r3, [pc, #124]	@ (80004d4 <main+0xc4>)
  8000458:	2200      	movs	r2, #0
  800045a:	601a      	str	r2, [r3, #0]
-	  		  setTimer1(250);
+		  setTimer1(250);
  800045c:	20fa      	movs	r0, #250	@ 0xfa
  800045e:	f7ff ff8f 	bl	8000380 <setTimer1>
-	  	  }
+	  }
 	  if (timer0_flag == 1)
  8000462:	4b1d      	ldr	r3, [pc, #116]	@ (80004d8 <main+0xc8>)
  8000464:	681b      	ldr	r3, [r3, #0]
@@ -558,62 +558,59 @@ int main(void)
  8000474:	4819      	ldr	r0, [pc, #100]	@ (80004dc <main+0xcc>)
  8000476:	f000 fce1 	bl	8000e3c <HAL_GPIO_TogglePin>
 
-
-
-
 		  second++;
  800047a:	4b19      	ldr	r3, [pc, #100]	@ (80004e0 <main+0xd0>)
  800047c:	681b      	ldr	r3, [r3, #0]
  800047e:	3301      	adds	r3, #1
  8000480:	4a17      	ldr	r2, [pc, #92]	@ (80004e0 <main+0xd0>)
  8000482:	6013      	str	r3, [r2, #0]
-		  		  if (second >= 60)
+		  if (second >= 60)
  8000484:	4b16      	ldr	r3, [pc, #88]	@ (80004e0 <main+0xd0>)
  8000486:	681b      	ldr	r3, [r3, #0]
  8000488:	2b3b      	cmp	r3, #59	@ 0x3b
  800048a:	dd07      	ble.n	800049c <main+0x8c>
-		  		  {
-		  			  second = 0;
+		  {
+			  second = 0;
  800048c:	4b14      	ldr	r3, [pc, #80]	@ (80004e0 <main+0xd0>)
  800048e:	2200      	movs	r2, #0
  8000490:	601a      	str	r2, [r3, #0]
-		  			  minute++;
+			  minute++;
  8000492:	4b14      	ldr	r3, [pc, #80]	@ (80004e4 <main+0xd4>)
  8000494:	681b      	ldr	r3, [r3, #0]
  8000496:	3301      	adds	r3, #1
  8000498:	4a12      	ldr	r2, [pc, #72]	@ (80004e4 <main+0xd4>)
  800049a:	6013      	str	r3, [r2, #0]
-		  		  }
-		  		  if (minute >= 60)
+		  }
+		  if (minute >= 60)
  800049c:	4b11      	ldr	r3, [pc, #68]	@ (80004e4 <main+0xd4>)
  800049e:	681b      	ldr	r3, [r3, #0]
  80004a0:	2b3b      	cmp	r3, #59	@ 0x3b
  80004a2:	dd07      	ble.n	80004b4 <main+0xa4>
-		  		  {
-		  			  minute = 0;
+		  {
+			  minute = 0;
  80004a4:	4b0f      	ldr	r3, [pc, #60]	@ (80004e4 <main+0xd4>)
  80004a6:	2200      	movs	r2, #0
  80004a8:	601a      	str	r2, [r3, #0]
-		  			  hour++;
+			  hour++;
  80004aa:	4b0f      	ldr	r3, [pc, #60]	@ (80004e8 <main+0xd8>)
  80004ac:	681b      	ldr	r3, [r3, #0]
  80004ae:	3301      	adds	r3, #1
  80004b0:	4a0d      	ldr	r2, [pc, #52]	@ (80004e8 <main+0xd8>)
  80004b2:	6013      	str	r3, [r2, #0]
-		  		  }
-		  		  if (hour >= 24)
+		  }
+		  if (hour >= 24)
  80004b4:	4b0c      	ldr	r3, [pc, #48]	@ (80004e8 <main+0xd8>)
  80004b6:	681b      	ldr	r3, [r3, #0]
  80004b8:	2b17      	cmp	r3, #23
  80004ba:	dd02      	ble.n	80004c2 <main+0xb2>
-		  		  {
-		  			  hour = 0;
+		  {
+			  hour = 0;
  80004bc:	4b0a      	ldr	r3, [pc, #40]	@ (80004e8 <main+0xd8>)
  80004be:	2200      	movs	r2, #0
  80004c0:	601a      	str	r2, [r3, #0]
-		  		  }
+		  }
 
-				  setTimer0(1000);
+		  setTimer0(1000);
  80004c2:	f44f 707a 	mov.w	r0, #1000	@ 0x3e8
  80004c6:	f7ff ff41 	bl	800034c <setTimer0>
 	  if (timer1_flag == 1)
