@@ -340,7 +340,7 @@ int main(void)
 			  index_led_matrix = 0;
 		  if (led_index == 4)
 			  led_index = 0;
-		  setTimer0(10);
+		  setTimer0(100);
 	  }
 
 
