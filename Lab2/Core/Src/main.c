@@ -304,7 +304,7 @@ void update7SEG(int index)
 }
 
 int i = 0;
-int counter1 = 100;
+int counter1 = 25;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -314,7 +314,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		HAL_GPIO_TogglePin(GPIOA, LED_Pin);
 		HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
 		update7SEG(i++);
-		counter1 = 100;
+		counter1 = 25;
 	}
 	if (i == 4)
 		i = 0;
