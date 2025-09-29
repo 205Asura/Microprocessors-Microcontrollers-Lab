@@ -194,14 +194,14 @@ const int MAX_LED_MATRIX = 8;
 int index_led_matrix = 0;
 int shift_left = 0;
 uint8_t matrix_buffer[8] = {
-		0x3C, // 00111100
-	    0x42, // 01000010
-	    0x81, // 10000001
-	    0x81, // 10000001
-	    0xFF, // 11111111
-	    0x81, // 10000001
-	    0x81, // 10000001
-	    0x81  // 10000001
+		0b00011000,
+	    0b00111100,
+	    0b01100110,
+	    0b01100110,
+	    0b01111110,
+	    0b01111110,
+	    0b01100110,
+	    0b01100110
 };
 
 int ENM_Pins[8] = {
@@ -332,34 +332,34 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  if (timer0_flag == 1)
 	  {
-		  HAL_GPIO_TogglePin(GPIOA, LED_Pin);
-		  HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
-		  second++;
-		  if (second >= 60)
-		  {
-			  second = 0;
-			  minute++;
-		  }
-		  if (minute >= 60)
-		  {
-			  minute = 0;
-			  hour++;
-		  }
-		  if (hour >= 24)
-		  {
-			  hour = 0;
-		  }
+//		  HAL_GPIO_TogglePin(GPIOA, LED_Pin);
+//		  HAL_GPIO_TogglePin(GPIOA, DOT_Pin);
+//		  second++;
+//		  if (second >= 60)
+//		  {
+//			  second = 0;
+//			  minute++;
+//		  }
+//		  if (minute >= 60)
+//		  {
+//			  minute = 0;
+//			  hour++;
+//		  }
+//		  if (hour >= 24)
+//		  {
+//			  hour = 0;
+//		  }
 		  clearLEDMatrix();
 		  updateLEDMatrix(index_led_matrix++);
-		  updateClockBuffer();
-		  update7SEG(led_index++);
+//		  updateClockBuffer();
+//		  update7SEG(led_index++);
 
 		  if (index_led_matrix == 8)
 		  {
 			  index_led_matrix = 0;
 		  }
-		  if (led_index == 4)
-			  led_index = 0;
+//		  if (led_index == 4)
+//			  led_index = 0;
 		  setTimer0(100);
 	  }
 
