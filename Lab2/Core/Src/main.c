@@ -216,7 +216,6 @@ void clearLEDMatrix()
 {
 	for (int i = 0; i <= 7; i++)
 	{
-		HAL_GPIO_WritePin(GPIOA, ENM_Pins[i], SET);
 		HAL_GPIO_WritePin(GPIOB, ROW_Pins[i], SET);
 	}
 }
@@ -360,7 +359,7 @@ int main(void)
 		  }
 //		  if (led_index == 4)
 //			  led_index = 0;
-		  setTimer0(100);
+		  setTimer0(10);
 	  }
 
 
