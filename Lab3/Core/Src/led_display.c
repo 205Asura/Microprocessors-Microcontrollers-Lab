@@ -22,9 +22,14 @@ uint16_t SEG_Pins[7] =
 		SEG0_Pin, SEG1_Pin, SEG2_Pin, SEG3_Pin, SEG4_Pin, SEG5_Pin, SEG6_Pin
 };
 
-uint16_t SEG_TIMERs[7] =
+uint16_t SEG_TIMER0[7] =
 {
 		SEG_TIMER0_Pin, SEG_TIMER1_Pin, SEG_TIMER2_Pin, SEG_TIMER3_Pin, SEG_TIMER4_Pin, SEG_TIMER5_Pin, SEG_TIMER6_Pin
+};
+
+uint16_t SEG_TIMER1[7] =
+{
+		SEG0_TIMER1_Pin, SEG1_TIMER1_Pin, SEG2_TIMER1_Pin, SEG3_TIMER1_Pin, SEG4_TIMER1_Pin, SEG5_TIMER1_Pin, SEG6_TIMER1_Pin
 };
 
 uint16_t EN_Pins[2] =
@@ -40,36 +45,7 @@ static uint8_t current_digit = 0;
 
 
 
-//void displayMode()
-//{
-//	uint8_t bitmask = segments[mode];
-//
-//	for (uint8_t i = 0; i <= 6; i++)
-//	{
-//		HAL_GPIO_WritePin(GPIOA, SEG_Pins[i], bitmask & (1 << (6 - i)) ? RESET : SET);
-//	}
-//}
-//
-//void displayTimer()
-//{
-//	switch (led_index_buffer0)
-//	{
-//	case 0:
-//		HAL_GPIO_WritePin(GPIOC, EN_Pins[0], RESET);
-//		HAL_GPIO_WritePin(GPIOC, EN_Pins[1], SET);
-//		break;
-//	case 1:
-//		HAL_GPIO_WritePin(GPIOC, EN_Pins[1], RESET);
-//		HAL_GPIO_WritePin(GPIOC, EN_Pins[0], SET);
-//		break;
-//	}
-//	uint8_t bitmask = segments[led_buffer0[led_index_buffer0]];
-//
-//		for (uint8_t i = 0; i <= 6; i++)
-//		{
-//			HAL_GPIO_WritePin(GPIOA, SEG_TIMERs[i], bitmask & (1 << (6 - i)) ? RESET : SET);
-//		}
-//}
+
 
 void displayMode()
 {
@@ -89,17 +65,6 @@ void displayMode()
 // Trong led_display.c
 void displayTimer()
 {
-//    static uint32_t last_switch_time = 0;
-
-    // Chỉ chuyển digit mỗi 5ms
-//    if (HAL_GetTick() - last_switch_time < 5) {
-//        return;
-//    }
-//    last_switch_time = HAL_GetTick();
-
-    // TẮT toàn bộ digit trước
-
-
 
     // Hiển thị digit hiện tại
     switch (current_digit)
@@ -114,9 +79,13 @@ void displayTimer()
         break;
     }
 
-    uint8_t bitmask = segments[led_buffer0[current_digit]];
+    uint8_t bitmask0 = segments[led_buffer0[current_digit]];
+    uint8_t bitmask1 = segments[led_buffer1[current_digit]];
+
     for (uint8_t i = 0; i <= 6; i++) {
-        HAL_GPIO_WritePin(GPIOA, SEG_TIMERs[i], bitmask & (1 << (6 - i)) ? RESET : SET);
+        HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
+        HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], bitmask1 & (1 << (6 - i)) ? RESET : SET);
+
     }
 
     // Chuyển digit

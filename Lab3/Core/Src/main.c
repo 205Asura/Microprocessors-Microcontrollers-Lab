@@ -121,17 +121,16 @@ int main(void)
 		  displayTimer();
 		  timer1_flag = 0;
 	  }
-	  if (timer3_flag == 1)
+	  if (timer4_flag == 1)
 	  {
 
 		  fsm_for_input_processing();
-
 		  displayMode();
 
 //		  led_index_buffer0++;
 //		  if (led_index_buffer0 == 2)
 //			  led_index_buffer0 = 0;
-		  timer3_flag = 0;
+		  timer4_flag = 0;
 	  }
 
 
@@ -196,7 +195,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 7999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 99;
+  htim2.Init.Period = 9;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)

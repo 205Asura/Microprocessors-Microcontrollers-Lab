@@ -28,7 +28,7 @@ void fsm_traffic()
 		case START:
 		status = RED0_GREEN1_AUTO;
 		setTimer2(red_timer);
-
+		setTimer3(green_timer);
 		break;
 
 		case RED0_GREEN1_AUTO:
@@ -39,12 +39,13 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, SET);
 		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, RESET);
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
-		if (timer2 <= yellow_timer)
+		if (timer2 <= yellow_timer || timer3_flag == 1)
 		{
-			// timer2_flag = 0;
+			timer3_flag = 0;
 			status = RED0_YELLOW1_AUTO;
-			// setTimer2(yellow_timer);
+			setTimer3(yellow_timer);
 		}
+
 		break;
 
 		case RED0_YELLOW1_AUTO:
@@ -54,11 +55,13 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, SET);
 		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, RESET);
-		if (timer2_flag == 1)
+		if (timer2_flag == 1 || timer3_flag == 1)
 		{
 			timer2_flag = 0;
+			timer3_flag = 0;
 			status = GREEN0_RED1_AUTO;
 			setTimer2(green_timer);
+			setTimer3(red_timer);
 		}
 		break;
 
@@ -70,7 +73,7 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, RESET);
 		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
-		if (timer2_flag == 1)
+		if (timer2_flag == 1 || timer3 <= yellow_timer)
 		{
 			timer2_flag = 0;
 			status = YELLOW0_RED1_AUTO;
@@ -85,11 +88,13 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, RESET);
 		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
-		if (timer2_flag == 1)
+		if (timer2_flag == 1 || timer3_flag == 1)
 		{
 			timer2_flag = 0;
+			timer3_flag = 0;
 			status = RED0_GREEN1_AUTO;
 			setTimer2(red_timer); // 5s for red
+			setTimer3(green_timer);
 		}
 	}
 	break;
