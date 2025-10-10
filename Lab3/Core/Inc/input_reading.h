@@ -10,10 +10,9 @@ extern uint8_t segments[10];
 extern uint16_t SEG_Pins[7];
 extern volatile uint8_t mode;
 
-extern uint8_t isButton0Pressed;
-extern uint8_t isButton1Pressed;
-extern uint8_t isButton2Pressed;
+extern uint8_t isButtonPressed[3];
 
-extern uint8_t flagForIncreasingCounter;
+
+extern uint8_t flagForIncreasingCounter[3];
 
 #endif /* INC_INPUT_READING_H_ */

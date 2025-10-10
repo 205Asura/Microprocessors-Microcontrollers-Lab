@@ -3,7 +3,7 @@
 #include "timer.h"
 #include "led_display.h"
 
-volatile int timer1 = 1; // timer for blinking leds
+volatile int timer1 = 1; // timer for blinking leds + display_timer
 volatile int timer2 = 1; // timer for auto traffic
 volatile int timer3 = 1; // timer for auto traffic 2
 volatile int timer4 = 1; // timer for invoking fsm
@@ -13,6 +13,7 @@ volatile int timer1_duration = 100; // ms
 volatile int timer2_duration = 0; // ms
 volatile int timer3_duration = 0; // ms
 volatile int timer4_duration = 100;
+
 
 
 volatile uint8_t timer1_flag = 0;
@@ -87,15 +88,16 @@ void timer_run()
 		timer3_flag = 1;
 		timer3 = timer3_duration;
 	}
-	fsm_traffic();
-	led_buffer0[0] = timer2 / 10000;
-	led_buffer0[1] = (timer2 % 10000) / 1000;
-	led_buffer1[0] = timer3 / 10000;
-	led_buffer1[1] = (timer3 % 10000) / 1000;
+
 	if (timer4 <= 0)
 	{
 		timer4_flag = 1;
 		timer4 = timer4_duration;
+		fsm_traffic();
+		led_buffer0[0] = timer2 / 10000;
+		led_buffer0[1] = (timer2 % 10000) / 1000;
+		led_buffer1[0] = timer3 / 10000;
+		led_buffer1[1] = (timer3 % 10000) / 1000;
 	}
 
 }
