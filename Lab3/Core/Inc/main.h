@@ -57,6 +57,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define EN0_Pin GPIO_PIN_13
+#define EN0_GPIO_Port GPIOC
+#define EN1_Pin GPIO_PIN_14
+#define EN1_GPIO_Port GPIOC
 #define SEG0_Pin GPIO_PIN_0
 #define SEG0_GPIO_Port GPIOA
 #define SEG1_Pin GPIO_PIN_1
@@ -73,24 +77,52 @@ void Error_Handler(void);
 #define SEG6_GPIO_Port GPIOA
 #define LED7_Pin GPIO_PIN_7
 #define LED7_GPIO_Port GPIOA
-#define LED_RED0_Pin GPIO_PIN_1
+#define LED_RED0_Pin GPIO_PIN_0
 #define LED_RED0_GPIO_Port GPIOB
-#define LED_GREEN0_Pin GPIO_PIN_2
+#define LED_GREEN0_Pin GPIO_PIN_1
 #define LED_GREEN0_GPIO_Port GPIOB
-#define BUTTON_0_Pin GPIO_PIN_12
-#define BUTTON_0_GPIO_Port GPIOB
-#define BUTTON_1_Pin GPIO_PIN_13
-#define BUTTON_1_GPIO_Port GPIOB
-#define BUTTON_2_Pin GPIO_PIN_14
-#define BUTTON_2_GPIO_Port GPIOB
-#define LED_YELLOW0_Pin GPIO_PIN_3
+#define LED_YELLOW0_Pin GPIO_PIN_2
 #define LED_YELLOW0_GPIO_Port GPIOB
-#define LED_RED1_Pin GPIO_PIN_4
+#define SEG1_TIMER1_Pin GPIO_PIN_10
+#define SEG1_TIMER1_GPIO_Port GPIOB
+#define SEG2_TIMER1_Pin GPIO_PIN_11
+#define SEG2_TIMER1_GPIO_Port GPIOB
+#define SEG3_TIMER1_Pin GPIO_PIN_12
+#define SEG3_TIMER1_GPIO_Port GPIOB
+#define SEG4_TIMER1_Pin GPIO_PIN_13
+#define SEG4_TIMER1_GPIO_Port GPIOB
+#define SEG5_TIMER1_Pin GPIO_PIN_14
+#define SEG5_TIMER1_GPIO_Port GPIOB
+#define SEG6_TIMER1_Pin GPIO_PIN_15
+#define SEG6_TIMER1_GPIO_Port GPIOB
+#define SEG_TIMER0_Pin GPIO_PIN_8
+#define SEG_TIMER0_GPIO_Port GPIOA
+#define SEG_TIMER1_Pin GPIO_PIN_9
+#define SEG_TIMER1_GPIO_Port GPIOA
+#define SEG_TIMER2_Pin GPIO_PIN_10
+#define SEG_TIMER2_GPIO_Port GPIOA
+#define SEG_TIMER3_Pin GPIO_PIN_11
+#define SEG_TIMER3_GPIO_Port GPIOA
+#define SEG_TIMER4_Pin GPIO_PIN_12
+#define SEG_TIMER4_GPIO_Port GPIOA
+#define SEG_TIMER5_Pin GPIO_PIN_13
+#define SEG_TIMER5_GPIO_Port GPIOA
+#define SEG_TIMER6_Pin GPIO_PIN_14
+#define SEG_TIMER6_GPIO_Port GPIOA
+#define LED_RED1_Pin GPIO_PIN_3
 #define LED_RED1_GPIO_Port GPIOB
-#define LED_GREEN1_Pin GPIO_PIN_5
+#define LED_GREEN1_Pin GPIO_PIN_4
 #define LED_GREEN1_GPIO_Port GPIOB
-#define LED_YELLOW1_Pin GPIO_PIN_6
+#define LED_YELLOW1_Pin GPIO_PIN_5
 #define LED_YELLOW1_GPIO_Port GPIOB
+#define BUTTON_0_Pin GPIO_PIN_6
+#define BUTTON_0_GPIO_Port GPIOB
+#define BUTTON_1_Pin GPIO_PIN_7
+#define BUTTON_1_GPIO_Port GPIOB
+#define BUTTON_2_Pin GPIO_PIN_8
+#define BUTTON_2_GPIO_Port GPIOB
+#define SEG0_TIMER1_Pin GPIO_PIN_9
+#define SEG0_TIMER1_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

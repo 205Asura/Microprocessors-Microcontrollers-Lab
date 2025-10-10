@@ -5,9 +5,8 @@
 // We aim to work with more than one button
 #define NO_OF_BUTTONS                 3
 
-// Timer interrupt duration is 10ms, so to pass 1 second,
-// we need to jump to the interrupt service routine 100 times
-#define DURATION_FOR_AUTO_INCREASING  100
+
+#define DURATION_FOR_AUTO_INCREASING  1000 // ms
 
 #define BUTTON_IS_PRESSED             GPIO_PIN_RESET
 #define BUTTON_IS_RELEASED            GPIO_PIN_SET
@@ -44,7 +43,7 @@ void button_reading(void)
                 // If a button is pressed, we start counting
                 if (counterForButtonPress1s[i] < DURATION_FOR_AUTO_INCREASING)
                 {
-                    counterForButtonPress1s[i]++;
+                    counterForButtonPress1s[i]+= TIMER_PERIOD_MS;
                 }
                 else
                 {
