@@ -115,18 +115,13 @@ int main(void)
 //
 //	  }
 
-	  if (timer1_flag == 1)
-	  {
 
-		  displayTimer();
-		  timer1_flag = 0;
-	  }
 	  if (timer4_flag == 1)
 	  {
 
 		  fsm_for_input_processing();
 		  displayMode();
-
+		  displayTimer();
 //		  led_index_buffer0++;
 //		  if (led_index_buffer0 == 2)
 //			  led_index_buffer0 = 0;

@@ -1,6 +1,7 @@
 #include "main.h"
 #include "led_display.h"
 #include "input_reading.h"
+#include "fsm_traffic.h"
 
 uint8_t led_index_buffer0 = 0;
 uint8_t segments[10] =
@@ -39,9 +40,11 @@ uint16_t EN_Pins[2] =
 
 uint8_t led_buffer0[2] = {0, 0};
 uint8_t led_buffer1[2] = {0, 0};
+uint8_t led_buffer2[2] = {0, 0};
+
 static uint8_t last_mode = 0;
 static uint8_t current_digit = 0;
-
+static uint8_t bitmask0, bitmask1;
 
 
 
@@ -78,14 +81,47 @@ void displayTimer()
         HAL_GPIO_WritePin(GPIOC, EN_Pins[1], RESET);
         break;
     }
+    switch (mode)
+    {
+    case 1:
+		bitmask0 = segments[led_buffer0[current_digit]];
+		bitmask1 = segments[led_buffer1[current_digit]];
+		for (uint8_t i = 0; i <= 6; i++)
+		{
+			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
+			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], bitmask1 & (1 << (6 - i)) ? RESET : SET);
+		}
+	break;
 
-    uint8_t bitmask0 = segments[led_buffer0[current_digit]];
-    uint8_t bitmask1 = segments[led_buffer1[current_digit]];
+    case 2:
+    	led_buffer2[0] = red_timer_temp / 10000;
+    	led_buffer2[1] = (red_timer_temp % 10000) / 1000;
+    	bitmask0 = segments[led_buffer2[current_digit]];
+    	for (uint8_t i = 0; i <= 6; i++)
+		{
+			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
+			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], SET);  // Off
+		}
+    break;
+    case 3:
+		led_buffer2[0] = yellow_timer_temp / 10000;
+		led_buffer2[1] = (yellow_timer_temp % 10000) / 1000;
+		bitmask0 = segments[led_buffer2[current_digit]];
+		for (uint8_t i = 0; i <= 6; i++) {
+			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
+			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], SET);  // Off
+		}
+		break;
 
-    for (uint8_t i = 0; i <= 6; i++) {
-        HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
-        HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], bitmask1 & (1 << (6 - i)) ? RESET : SET);
-
+	case 4:
+		led_buffer2[0] = green_timer_temp / 10000;
+		led_buffer2[1] = (green_timer_temp % 10000) / 1000;
+		bitmask0 = segments[led_buffer2[current_digit]];
+		for (uint8_t i = 0; i <= 6; i++) {
+			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
+			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], SET);  // Off
+		}
+		break;
     }
 
     // Chuyển digit
