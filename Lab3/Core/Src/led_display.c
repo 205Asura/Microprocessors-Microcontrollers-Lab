@@ -4,8 +4,7 @@
 #include "fsm_traffic.h"
 #include "timer.h"
 
-uint8_t led_index_buffer0 = 0;
-uint8_t segments[10] =
+static uint8_t segments[10] =
 {
 		0b1111110, // zero
 		0b0110000, // one
@@ -19,28 +18,28 @@ uint8_t segments[10] =
 		0b1111011  // nine
 };
 
-uint16_t SEG_Pins[7] =
+static uint16_t SEG_Pins[7] =
 {
 		SEG0_MODE_Pin, SEG1_MODE_Pin, SEG2_MODE_Pin, SEG3_MODE_Pin, SEG4_MODE_Pin, SEG5_MODE_Pin, SEG6_MODE_Pin
 };
 
-uint16_t SEG_TIMER0[7] =
+static uint16_t SEG_TIMER0[7] =
 {
 		SEG0_TIMER0_Pin, SEG1_TIMER0_Pin, SEG2_TIMER0_Pin, SEG3_TIMER0_Pin, SEG4_TIMER0_Pin, SEG5_TIMER0_Pin, SEG6_TIMER0_Pin
 };
 
-uint16_t SEG_TIMER1[7] =
+static uint16_t SEG_TIMER1[7] =
 {
 		SEG0_TIMER1_Pin, SEG1_TIMER1_Pin, SEG2_TIMER1_Pin, SEG3_TIMER1_Pin, SEG4_TIMER1_Pin, SEG5_TIMER1_Pin, SEG6_TIMER1_Pin
 };
 
-uint16_t EN_Pins[2] =
+static uint16_t EN_Pins[2] =
 {
 		EN0_Pin, EN1_Pin
 };
 
-uint8_t led_buffer0[2] = {0, 0};
-uint8_t led_buffer1[2] = {0, 0};
+static uint8_t led_buffer0[2] = {0, 0};
+static uint8_t led_buffer1[2] = {0, 0};
 
 static uint8_t last_mode = 0;
 static uint8_t current_digit = 0;

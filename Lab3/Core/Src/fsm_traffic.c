@@ -3,11 +3,10 @@
 #include "timer.h"
 #include "input_reading.h"
 #include "led_display.h"
-volatile enum status status = START;
-uint8_t isButton0Pressed = 0;
+enum status status = START;
 static uint8_t prev_mode = 1;
-volatile uint32_t red_timer = 5000, green_timer = 3000, yellow_timer = 2000;
-volatile uint32_t red_timer_temp = 5000, green_timer_temp = 3000, yellow_timer_temp = 2000;
+uint32_t red_timer = 5000, green_timer = 3000, yellow_timer = 2000;
+uint32_t red_timer_temp = 5000, green_timer_temp = 3000, yellow_timer_temp = 2000;
 
 
 

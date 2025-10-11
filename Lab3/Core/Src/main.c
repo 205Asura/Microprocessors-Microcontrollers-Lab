@@ -97,19 +97,8 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
-  HAL_GPIO_WritePin(GPIOC, EN0_Pin|EN1_Pin, GPIO_PIN_SET);
 
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOA, SEG0_MODE_Pin|SEG1_MODE_Pin|SEG2_MODE_Pin|SEG3_MODE_Pin
-                            |SEG4_MODE_Pin|SEG5_MODE_Pin|SEG6_MODE_Pin|LED7_Pin
-                            |SEG0_TIMER0_Pin|SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_TIMER0_Pin
-                            |SEG4_TIMER0_Pin|SEG5_TIMER0_Pin|SEG6_TIMER0_Pin, GPIO_PIN_SET);
 
-    /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin|LED_GREEN0_Pin|LED_YELLOW0_Pin|SEG1_TIMER1_Pin
-                            |SEG2_TIMER1_Pin|SEG3_TIMER1_Pin|SEG4_TIMER1_Pin|SEG5_TIMER1_Pin
-                            |SEG6_TIMER1_Pin|LED_RED1_Pin|LED_GREEN1_Pin|LED_YELLOW1_Pin
-                            |BUTTON_0_Pin|BUTTON_1_Pin|BUTTON_2_Pin|SEG0_TIMER1_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,19 +114,12 @@ int main(void)
 		fsm_for_input_processing();
 		displayMode();
 
-	  fsm_traffic();
-	  timer_line0 = timer2;
-	  timer_line1 = timer3;
-		  displayTimer();
-//		displayTimer();
+		fsm_traffic();
+		timer_line0 = timer2;
+		timer_line1 = timer3;
+		displayTimer();
 		setTimer4(100);
 	  }
-
-//	  if (timer5_flag == 1)
-//	  {
-//
-//		  setTimer5(250);
-//	  }
 
 
   }
@@ -243,19 +225,19 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, EN0_Pin|EN1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, EN0_Pin|EN1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, SEG0_MODE_Pin|SEG1_MODE_Pin|SEG2_MODE_Pin|SEG3_MODE_Pin
                           |SEG4_MODE_Pin|SEG5_MODE_Pin|SEG6_MODE_Pin|LED7_Pin
                           |SEG0_TIMER0_Pin|SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_TIMER0_Pin
-                          |SEG4_TIMER0_Pin|SEG5_TIMER0_Pin|SEG6_TIMER0_Pin, GPIO_PIN_RESET);
+                          |SEG4_TIMER0_Pin|SEG5_TIMER0_Pin|SEG6_TIMER0_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin|LED_GREEN0_Pin|LED_YELLOW0_Pin|SEG1_TIMER1_Pin
                           |SEG2_TIMER1_Pin|SEG3_TIMER1_Pin|SEG4_TIMER1_Pin|SEG5_TIMER1_Pin
                           |SEG6_TIMER1_Pin|LED_RED1_Pin|LED_GREEN1_Pin|LED_YELLOW1_Pin
-                          |BUTTON_0_Pin|BUTTON_1_Pin|BUTTON_2_Pin|SEG0_TIMER1_Pin, GPIO_PIN_RESET);
+                          |BUTTON_0_Pin|BUTTON_1_Pin|BUTTON_2_Pin|SEG0_TIMER1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : EN0_Pin EN1_Pin */
   GPIO_InitStruct.Pin = EN0_Pin|EN1_Pin;

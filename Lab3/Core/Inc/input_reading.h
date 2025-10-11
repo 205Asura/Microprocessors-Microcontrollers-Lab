@@ -6,11 +6,8 @@ unsigned char is_button_pressed(unsigned char index);
 unsigned char is_button_pressed_1s(unsigned char index);
 unsigned char is_button_pressed_30ms(unsigned char index);
 
-extern uint8_t segments[10];
-extern uint16_t SEG_Pins[7];
 extern uint8_t mode;
 
-extern uint8_t isButtonPressed[3];
 
 
 extern uint8_t flagForIncreasingCounter[3];

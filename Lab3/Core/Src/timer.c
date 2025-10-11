@@ -3,14 +3,14 @@
 #include "timer.h"
 #include "led_display.h"
 
-volatile int timer1 = 100; // timer for blinking leds
+volatile int timer1 = 250; // timer for blinking leds
 volatile int timer2 = 0; // timer for auto traffic
 volatile int timer3 = 0; // timer for auto traffic 2
 volatile int timer4 = 100; // timer for invoking fsm, display
 volatile int timer5 = 250;
 
-volatile int timer_line0 = 0;
-volatile int timer_line1 = 0;
+int timer_line0 = 0;
+int timer_line1 = 0;
 
 
 volatile uint8_t timer1_flag = 0;
@@ -114,7 +114,6 @@ void timer_run()
 	}
 
 }
-static uint8_t button_tick = 0;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM2) {

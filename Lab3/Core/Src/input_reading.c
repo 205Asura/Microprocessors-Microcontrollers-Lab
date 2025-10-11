@@ -27,29 +27,39 @@ uint8_t flagForIncreasingCounter[NO_OF_BUTTONS] = {0};  // Thêm volatile và ar
 
 static uint16_t increasingCounterPeriod[NO_OF_BUTTONS] = {500, 500, 500};  // Per-button để tránh conflict
 
-void button_reading(void) {
-    for (uint8_t i = 0; i < NO_OF_BUTTONS; i++) {
+void button_reading(void)
+{
+    for (uint8_t i = 0; i < NO_OF_BUTTONS; i++)
+    {
         debounceButtonBuffer2[i] = debounceButtonBuffer1[i];
         debounceButtonBuffer1[i] = HAL_GPIO_ReadPin(GPIOB, BUTTON_Pins[i]);
 
-        if (debounceButtonBuffer1[i] == debounceButtonBuffer2[i]) {
+        if (debounceButtonBuffer1[i] == debounceButtonBuffer2[i])
+        {
             buttonBuffer[i] = debounceButtonBuffer1[i];
 
-            if (buttonBuffer[i] == BUTTON_IS_PRESSED) {
+            if (buttonBuffer[i] == BUTTON_IS_PRESSED)
+            {
                 // If a button is pressed, we start counting
-                if (counterForButtonPress1s[i] < DURATION_FOR_AUTO_INCREASING) {
+                if (counterForButtonPress1s[i] < DURATION_FOR_AUTO_INCREASING)
+                {
                     counterForButtonPress1s[i] += TIMER_PERIOD_MS;
-                } else {
+                }
+                else
+                {
                     // The flag is turned on when 1 second has passed since the button is pressed
                     flagForButtonPress1s[i] = 1;
                     // Handle long press auto-increase per button
                     increasingCounterPeriod[i] += TIMER_PERIOD_MS;
-                    if (increasingCounterPeriod[i] >= 500) {  // Auto-increase every 500ms after 1s
+                    if (increasingCounterPeriod[i] >= 500)
+                    {  // Auto-increase every 500ms after 1s
                         increasingCounterPeriod[i] = 0;
                         flagForIncreasingCounter[i] = 1;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 counterForButtonPress1s[i] = 0;
                 flagForButtonPress1s[i] = 0;
                 increasingCounterPeriod[i] = 0;  // Reset per button

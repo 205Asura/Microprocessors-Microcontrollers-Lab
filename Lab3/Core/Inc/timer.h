@@ -1,7 +1,6 @@
 #ifndef INC_TIMER_H
 #define INC_TIMER_H
 
-extern unsigned char timer_flag;
 
 //extern volatile uint16_t timer1;
 //extern volatile uint32_t timer2;
@@ -15,8 +14,8 @@ extern volatile int timer3;
 extern volatile int timer4;
 extern volatile int timer5;
 
-extern volatile int timer_line0;
-extern volatile int timer_line1;
+extern int timer_line0;
+extern int timer_line1;
 
 
 extern volatile uint8_t timer1_flag;
