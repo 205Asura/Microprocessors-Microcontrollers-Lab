@@ -5,7 +5,7 @@
 #include "led_display.h"
 volatile enum status status = START;
 uint8_t isButton0Pressed = 0;
-volatile uint8_t prev_mode = 1;
+static uint8_t prev_mode = 1;
 volatile uint16_t red_timer = 5000, green_timer = 3000, yellow_timer = 2000;
 volatile uint16_t red_timer_temp = 5000, green_timer_temp = 3000, yellow_timer_temp = 2000;
 
@@ -13,12 +13,13 @@ volatile uint16_t red_timer_temp = 5000, green_timer_temp = 3000, yellow_timer_t
 
 void fsm_traffic()
 {
+
 	if (prev_mode != mode)
 	{
-		status = START;
 		prev_mode = mode;
+		if (mode == 1)
+			status = START;
 	}
-
 	switch (mode)
 	{
 	case 1:
@@ -41,7 +42,6 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
 		if (timer2 <= yellow_timer || timer3_flag == 1)
 		{
-			timer3_flag = 0;
 			status = RED0_YELLOW1_AUTO;
 			setTimer3(yellow_timer);
 		}
@@ -57,8 +57,6 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, RESET);
 		if (timer2_flag == 1 || timer3_flag == 1)
 		{
-			timer2_flag = 0;
-			timer3_flag = 0;
 			status = GREEN0_RED1_AUTO;
 			setTimer2(green_timer);
 			setTimer3(red_timer);
@@ -75,7 +73,6 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
 		if (timer2_flag == 1 || timer3 <= yellow_timer)
 		{
-			timer2_flag = 0;
 			status = YELLOW0_RED1_AUTO;
 			setTimer2(yellow_timer); // 5s for red
 		}
@@ -90,8 +87,6 @@ void fsm_traffic()
 		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
 		if (timer2_flag == 1 || timer3_flag == 1)
 		{
-			timer2_flag = 0;
-			timer3_flag = 0;
 			status = RED0_GREEN1_AUTO;
 			setTimer2(red_timer); // 5s for red
 			setTimer3(green_timer);
@@ -105,7 +100,7 @@ void fsm_traffic()
 	{
 		HAL_GPIO_TogglePin(GPIOB, LED_RED0_Pin);
 		HAL_GPIO_TogglePin(GPIOB, LED_RED1_Pin);
-		timer1_flag = 0;
+		setTimer1(100);
 	}
 	HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
 	HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);
@@ -118,7 +113,7 @@ void fsm_traffic()
 	{
 		HAL_GPIO_TogglePin(GPIOB, LED_YELLOW0_Pin);
 		HAL_GPIO_TogglePin(GPIOB, LED_YELLOW1_Pin);
-		timer1_flag = 0;
+		setTimer1(100);
 	}
 	HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, SET);
 	HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
@@ -131,7 +126,7 @@ void fsm_traffic()
 	{
 		HAL_GPIO_TogglePin(GPIOB, LED_GREEN0_Pin);
 		HAL_GPIO_TogglePin(GPIOB, LED_GREEN1_Pin);
-		timer1_flag = 0;
+		setTimer1(100);
 	}
 	HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, SET);
 	HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);

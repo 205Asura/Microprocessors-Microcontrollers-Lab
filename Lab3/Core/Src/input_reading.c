@@ -25,10 +25,10 @@ static uint16_t BUTTON_Pins[NO_OF_BUTTONS] = {BUTTON_0_Pin, BUTTON_1_Pin, BUTTON
 
 uint8_t flagForIncreasingCounter[NO_OF_BUTTONS] = {0};  // Thêm volatile và array
 
-static uint16_t increasingCounterPeriod[NO_OF_BUTTONS] = {0};  // Per-button để tránh conflict
+static uint16_t increasingCounterPeriod[NO_OF_BUTTONS] = {500, 500, 500};  // Per-button để tránh conflict
 
 void button_reading(void) {
-    for (char i = 0; i < NO_OF_BUTTONS; i++) {
+    for (uint8_t i = 0; i < NO_OF_BUTTONS; i++) {
         debounceButtonBuffer2[i] = debounceButtonBuffer1[i];
         debounceButtonBuffer1[i] = HAL_GPIO_ReadPin(GPIOB, BUTTON_Pins[i]);
 

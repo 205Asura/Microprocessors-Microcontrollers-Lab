@@ -110,11 +110,11 @@ int main(void)
 	  if (timer4_flag == 1)
 	  {
 		fsm_for_input_processing();
-		fsm_traffic();
 		displayMode();
-		displayTimer();
 
-		timer4_flag = 0;
+
+
+		setTimer4(100);
 	  }
 
 

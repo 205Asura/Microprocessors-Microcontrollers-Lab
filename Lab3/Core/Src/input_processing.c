@@ -2,8 +2,8 @@
 #include "input_reading.h"
 #include "input_processing.h"
 #include "fsm_traffic.h"
+extern uint8_t mode = 1;
 
-volatile uint8_t mode = 1;
 
 
 enum ButtonState {BUTTON_RELEASED, BUTTON_PRESSED, BUTTON_PRESSED_MORE_THAN_1_SECOND};

@@ -8,7 +8,7 @@ unsigned char is_button_pressed_30ms(unsigned char index);
 
 extern uint8_t segments[10];
 extern uint16_t SEG_Pins[7];
-extern volatile uint8_t mode;
+extern uint8_t mode;
 
 extern uint8_t isButtonPressed[3];
 

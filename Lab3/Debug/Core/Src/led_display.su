@@ -1,2 +1,2 @@
 ../Core/Src/led_display.c:54:6:displayMode	16	static
-../Core/Src/led_display.c:70:6:displayTimer	16	static
+../Core/Src/led_display.c:73:6:displayTimer	16	static
