@@ -15,20 +15,8 @@ extern volatile int timer3;
 extern volatile int timer4;
 extern volatile int timer5;
 
-
-
-
-//extern volatile uint16_t timer1_duration;
-//extern volatile uint32_t timer2_duration;
-//extern volatile uint32_t timer3_duration;
-//extern volatile uint16_t timer4_duration;
-//extern volatile uint16_t timer5_duration;
-
-extern volatile int timer1_duration;
-extern volatile int timer2_duration;
-extern volatile int timer3_duration;
-extern volatile int timer4_duration;
-extern volatile int timer5_duration;
+extern volatile int timer_line0;
+extern volatile int timer_line1;
 
 
 extern volatile uint8_t timer1_flag;

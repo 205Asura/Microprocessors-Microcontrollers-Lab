@@ -6,8 +6,8 @@
 volatile enum status status = START;
 uint8_t isButton0Pressed = 0;
 static uint8_t prev_mode = 1;
-volatile uint16_t red_timer = 5000, green_timer = 3000, yellow_timer = 2000;
-volatile uint16_t red_timer_temp = 5000, green_timer_temp = 3000, yellow_timer_temp = 2000;
+volatile uint32_t red_timer = 5000, green_timer = 3000, yellow_timer = 2000;
+volatile uint32_t red_timer_temp = 5000, green_timer_temp = 3000, yellow_timer_temp = 2000;
 
 
 
@@ -34,12 +34,8 @@ void fsm_traffic()
 
 		case RED0_GREEN1_AUTO:
 
-		HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
+		GPIOB->BSRR = ((LED_RED0_Pin | LED_GREEN1_Pin) << 16)
+		| LED_GREEN0_Pin | LED_YELLOW0_Pin | LED_RED1_Pin | LED_YELLOW1_Pin;
 		if (timer2 <= yellow_timer || timer3_flag == 1)
 		{
 			status = RED0_YELLOW1_AUTO;
@@ -49,12 +45,8 @@ void fsm_traffic()
 		break;
 
 		case RED0_YELLOW1_AUTO:
-		HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, RESET);
+		GPIOB->BSRR = ((LED_RED0_Pin | LED_YELLOW1_Pin) << 16)
+		| LED_GREEN0_Pin | LED_YELLOW0_Pin | LED_RED1_Pin | LED_GREEN1_Pin;
 		if (timer2_flag == 1 || timer3_flag == 1)
 		{
 			status = GREEN0_RED1_AUTO;
@@ -65,12 +57,8 @@ void fsm_traffic()
 
 		case GREEN0_RED1_AUTO:
 
-		HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
+		GPIOB->BSRR = ((LED_RED1_Pin | LED_GREEN0_Pin) << 16)
+		| LED_RED0_Pin | LED_YELLOW0_Pin | LED_GREEN1_Pin | LED_YELLOW1_Pin;
 		if (timer2_flag == 1 || timer3 <= yellow_timer)
 		{
 			status = YELLOW0_RED1_AUTO;
@@ -79,12 +67,8 @@ void fsm_traffic()
 		break;
 
 		case YELLOW0_RED1_AUTO:
-		HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, RESET);
-		HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
-		HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
+		GPIOB->BSRR = ((LED_RED1_Pin | LED_YELLOW0_Pin) << 16)
+		| LED_GREEN0_Pin | LED_RED0_Pin | LED_GREEN1_Pin | LED_YELLOW1_Pin;
 		if (timer2_flag == 1 || timer3_flag == 1)
 		{
 			status = RED0_GREEN1_AUTO;
@@ -98,40 +82,28 @@ void fsm_traffic()
 
 	if (timer1_flag == 1)
 	{
-		HAL_GPIO_TogglePin(GPIOB, LED_RED0_Pin);
-		HAL_GPIO_TogglePin(GPIOB, LED_RED1_Pin);
+		GPIOB->ODR ^= LED_RED0_Pin | LED_RED1_Pin;
 		setTimer1(100);
 	}
-	HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
+	GPIOB->BSRR = LED_GREEN0_Pin | LED_YELLOW0_Pin | LED_GREEN1_Pin | LED_YELLOW1_Pin;
 	break;
 
 	case 3:
 	if (timer1_flag == 1)
 	{
-		HAL_GPIO_TogglePin(GPIOB, LED_YELLOW0_Pin);
-		HAL_GPIO_TogglePin(GPIOB, LED_YELLOW1_Pin);
+		GPIOB->ODR ^= LED_YELLOW0_Pin | LED_YELLOW1_Pin;
 		setTimer1(100);
 	}
-	HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_GREEN0_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_GREEN1_Pin, SET);
+	GPIOB->BSRR = LED_GREEN0_Pin | LED_RED0_Pin | LED_GREEN1_Pin | LED_RED1_Pin;
 	break;
 
 	case 4:
 	if (timer1_flag == 1)
 	{
-		HAL_GPIO_TogglePin(GPIOB, LED_GREEN0_Pin);
-		HAL_GPIO_TogglePin(GPIOB, LED_GREEN1_Pin);
+		GPIOB->ODR ^= LED_GREEN0_Pin | LED_GREEN1_Pin;
 		setTimer1(100);
 	}
-	HAL_GPIO_WritePin(GPIOB, LED_RED0_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_YELLOW0_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_RED1_Pin, SET);
-	HAL_GPIO_WritePin(GPIOB, LED_YELLOW1_Pin, SET);
+	GPIOB->BSRR = LED_YELLOW0_Pin | LED_RED0_Pin | LED_YELLOW1_Pin | LED_RED1_Pin;
 	break;
 
 	}

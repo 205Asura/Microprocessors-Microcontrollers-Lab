@@ -1,2 +1,2 @@
-../Core/Src/led_display.c:54:6:displayMode	3
-../Core/Src/led_display.c:73:6:displayTimer	12
+../Core/Src/led_display.c:53:6:displayMode	4
+../Core/Src/led_display.c:74:6:displayTimer	20

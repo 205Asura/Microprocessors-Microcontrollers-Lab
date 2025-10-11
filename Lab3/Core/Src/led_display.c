@@ -21,12 +21,12 @@ uint8_t segments[10] =
 
 uint16_t SEG_Pins[7] =
 {
-		SEG0_Pin, SEG1_Pin, SEG2_Pin, SEG3_Pin, SEG4_Pin, SEG5_Pin, SEG6_Pin
+		SEG0_MODE_Pin, SEG1_MODE_Pin, SEG2_MODE_Pin, SEG3_MODE_Pin, SEG4_MODE_Pin, SEG5_MODE_Pin, SEG6_MODE_Pin
 };
 
 uint16_t SEG_TIMER0[7] =
 {
-		SEG_TIMER0_Pin, SEG_TIMER1_Pin, SEG_TIMER2_Pin, SEG_TIMER3_Pin, SEG_TIMER4_Pin, SEG_TIMER5_Pin, SEG_TIMER6_Pin
+		SEG0_TIMER0_Pin, SEG1_TIMER0_Pin, SEG2_TIMER0_Pin, SEG3_TIMER0_Pin, SEG4_TIMER0_Pin, SEG5_TIMER0_Pin, SEG6_TIMER0_Pin
 };
 
 uint16_t SEG_TIMER1[7] =
@@ -41,7 +41,6 @@ uint16_t EN_Pins[2] =
 
 uint8_t led_buffer0[2] = {0, 0};
 uint8_t led_buffer1[2] = {0, 0};
-uint8_t led_buffer2[2] = {0, 0};
 
 static uint8_t last_mode = 0;
 static uint8_t current_digit = 0;
@@ -58,13 +57,15 @@ void displayMode()
     if (mode != last_mode)
     {
         uint8_t bitmask = segments[mode];
-
+        uint32_t reset_mask, set_mask = 0;
         for (uint8_t i = 0; i <= 6; i++)
         {
-//            HAL_GPIO_WritePin(GPIOA, SEG_Pins[i], bitmask & (1 << (6 - i)) ? RESET : SET);
-        	GPIOA->BSRR = SEG_Pins[i] << (bitmask & (1 << (6 - i)) ? 16 : 0);
+        	if (bitmask & (1 << (6 - i)))
+        		reset_mask |= SEG_Pins[i];
+        	else
+        		set_mask |= SEG_Pins[i];
         }
-
+        GPIOA->BSRR = (reset_mask << 16) | set_mask;
         last_mode = mode;
     }
 }
@@ -73,76 +74,100 @@ void displayMode()
 void displayTimer()
 {
 
-    // Hiển thị digit hiện tại
     switch (current_digit)
     {
     case 0:
-//        HAL_GPIO_WritePin(GPIOC, EN_Pins[0], RESET);
-//        HAL_GPIO_WritePin(GPIOC, EN_Pins[1], SET);
     	GPIOC->BSRR = (EN_Pins[0] << 16 | EN_Pins[1]);
         break;
     case 1:
-//    	HAL_GPIO_WritePin(GPIOC, EN_Pins[0], SET);
-//        HAL_GPIO_WritePin(GPIOC, EN_Pins[1], RESET);
     	GPIOC->BSRR = (EN_Pins[0] | EN_Pins[1] << 16);
         break;
     }
+
+    uint32_t set_maskA = 0, reset_maskA = 0, set_maskB = 0, reset_maskB = 0;
     switch (mode)
     {
     case 1:
-    	led_buffer0[0] = timer2 / 10000;
-		led_buffer0[1] = (timer2 % 10000) / 1000;
-		led_buffer1[0] = timer3 / 10000;
-		led_buffer1[1] = (timer3 % 10000) / 1000;
+    	led_buffer0[0] = timer_line0 / 10000;
+		led_buffer0[1] = (timer_line0 % 10000) / 1000;
+		led_buffer1[0] = timer_line1 / 10000;
+		led_buffer1[1] = (timer_line1 % 10000) / 1000;
 		bitmask0 = segments[led_buffer0[current_digit]];
 		bitmask1 = segments[led_buffer1[current_digit]];
 		for (uint8_t i = 0; i <= 6; i++)
 		{
-//			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
-//			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], bitmask1 & (1 << (6 - i)) ? RESET : SET);
-			GPIOA->BSRR = SEG_TIMER0[i] << (bitmask0 & (1 << (6 - i)) ? 16 : 0);
-			GPIOB->BSRR = SEG_TIMER1[i] << (bitmask0 & (1 << (6 - i)) ? 16 : 0);
+			if (bitmask0 & (1 << (6 - i)))
+				reset_maskA |= SEG_TIMER0[i];
+			else
+				set_maskA |= SEG_TIMER0[i];
+			if (bitmask1 & (1 << (6 - i)))
+				reset_maskB |= SEG_TIMER1[i];
+			else
+				set_maskB |= SEG_TIMER1[i];
 		}
+
 	break;
 
     case 2:
-    	led_buffer2[0] = red_timer_temp / 10000;
-    	led_buffer2[1] = (red_timer_temp % 10000) / 1000;
-    	bitmask0 = segments[led_buffer2[current_digit]];
+    	led_buffer0[0] = red_timer_temp / 10000;
+    	led_buffer0[1] = (red_timer_temp % 10000) / 1000;
+    	led_buffer1[1] = mode;
+    	bitmask0 = segments[led_buffer0[current_digit]];
+    	bitmask1 = segments[led_buffer1[current_digit]];
     	for (uint8_t i = 0; i <= 6; i++)
 		{
-//			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
-//			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], SET);  // Off
-    		GPIOA->BSRR = SEG_TIMER0[i] << (bitmask0 & (1 << (6 - i)) ? 16 : 0);
-    		GPIOB->BSRR = SEG_TIMER1[i];
+    		if (bitmask0 & (1 << (6 - i)))
+				reset_maskA |= SEG_TIMER0[i];
+			else
+				set_maskA |= SEG_TIMER0[i];
+			if (bitmask1 & (1 << (6 - i)))
+				reset_maskB |= SEG_TIMER1[i];
+			else
+				set_maskB |= SEG_TIMER1[i];
 		}
     break;
     case 3:
-		led_buffer2[0] = yellow_timer_temp / 10000;
-		led_buffer2[1] = (yellow_timer_temp % 10000) / 1000;
-		bitmask0 = segments[led_buffer2[current_digit]];
-		for (uint8_t i = 0; i <= 6; i++) {
-//			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
-//			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], SET);  // Off
-			GPIOA->BSRR = SEG_TIMER0[i] << (bitmask0 & (1 << (6 - i)) ? 16 : 0);
-			GPIOB->BSRR = SEG_TIMER1[i];
+    	led_buffer0[0] = yellow_timer_temp / 10000;
+		led_buffer0[1] = (yellow_timer_temp % 10000) / 1000;
+		led_buffer1[1] = mode;
+		bitmask0 = segments[led_buffer0[current_digit]];
+		bitmask1 = segments[led_buffer1[current_digit]];
+		for (uint8_t i = 0; i <= 6; i++)
+		{
+			if (bitmask0 & (1 << (6 - i)))
+				reset_maskA |= SEG_TIMER0[i];
+			else
+				set_maskA |= SEG_TIMER0[i];
+			if (bitmask1 & (1 << (6 - i)))
+				reset_maskB |= SEG_TIMER1[i];
+			else
+				set_maskB |= SEG_TIMER1[i];
 		}
-		break;
+	break;
 
 	case 4:
-		led_buffer2[0] = green_timer_temp / 10000;
-		led_buffer2[1] = (green_timer_temp % 10000) / 1000;
-		bitmask0 = segments[led_buffer2[current_digit]];
-		for (uint8_t i = 0; i <= 6; i++) {
-//			HAL_GPIO_WritePin(GPIOA, SEG_TIMER0[i], bitmask0 & (1 << (6 - i)) ? RESET : SET);
-//			HAL_GPIO_WritePin(GPIOB, SEG_TIMER1[i], SET);  // Off
-			GPIOA->BSRR = SEG_TIMER0[i] << (bitmask0 & (1 << (6 - i)) ? 16 : 0);
-			GPIOB->BSRR = SEG_TIMER1[i];
+		led_buffer0[0] = green_timer_temp / 10000;
+		led_buffer0[1] = (green_timer_temp % 10000) / 1000;
+		led_buffer1[1] = mode;
+		bitmask0 = segments[led_buffer0[current_digit]];
+		bitmask1 = segments[led_buffer1[current_digit]];
+		for (uint8_t i = 0; i <= 6; i++)
+		{
+			if (bitmask0 & (1 << (6 - i)))
+				reset_maskA |= SEG_TIMER0[i];
+			else
+				set_maskA |= SEG_TIMER0[i];
+			if (bitmask1 & (1 << (6 - i)))
+				reset_maskB |= SEG_TIMER1[i];
+			else
+				set_maskB |= SEG_TIMER1[i];
 		}
 		break;
     }
 
     // Chuyển digit
+    GPIOA->BSRR = (reset_maskA << 16) | set_maskA;
+    GPIOB->BSRR = (reset_maskB << 16) | set_maskB;
     current_digit++;
     if (current_digit >= 2) {
         current_digit = 0;
