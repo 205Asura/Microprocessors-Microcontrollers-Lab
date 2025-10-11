@@ -107,25 +107,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-//	  timer4--;
-//	  if (timer4 == 0)
-//	  {
-//		  timer4 = 10;
-//
-//	  }
-
-
 	  if (timer4_flag == 1)
 	  {
+		fsm_for_input_processing();
+		fsm_traffic();
+		displayMode();
+		displayTimer();
 
-		  fsm_for_input_processing();
-		  displayMode();
-		  displayTimer();
-//		  led_index_buffer0++;
-//		  if (led_index_buffer0 == 2)
-//			  led_index_buffer0 = 0;
-		  timer4_flag = 0;
+		timer4_flag = 0;
 	  }
 
 

@@ -2,6 +2,7 @@
 #include "led_display.h"
 #include "input_reading.h"
 #include "fsm_traffic.h"
+#include "timer.h"
 
 uint8_t led_index_buffer0 = 0;
 uint8_t segments[10] =
@@ -84,6 +85,10 @@ void displayTimer()
     switch (mode)
     {
     case 1:
+    	led_buffer0[0] = timer2 / 10000;
+		led_buffer0[1] = (timer2 % 10000) / 1000;
+		led_buffer1[0] = timer3 / 10000;
+		led_buffer1[1] = (timer3 % 10000) / 1000;
 		bitmask0 = segments[led_buffer0[current_digit]];
 		bitmask1 = segments[led_buffer1[current_digit]];
 		for (uint8_t i = 0; i <= 6; i++)

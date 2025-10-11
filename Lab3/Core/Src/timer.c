@@ -93,14 +93,14 @@ void timer_run()
 	{
 		timer4_flag = 1;
 		timer4 = timer4_duration;
-		fsm_traffic();
-		if (mode == 1)
-		{
-			led_buffer0[0] = timer2 / 10000;
-			led_buffer0[1] = (timer2 % 10000) / 1000;
-			led_buffer1[0] = timer3 / 10000;
-			led_buffer1[1] = (timer3 % 10000) / 1000;
-		}
+//		fsm_traffic();
+//		if (mode == 1)
+//		{
+//			led_buffer0[0] = timer2 / 10000;
+//			led_buffer0[1] = (timer2 % 10000) / 1000;
+//			led_buffer1[0] = timer3 / 10000;
+//			led_buffer1[1] = (timer3 % 10000) / 1000;
+//		}
 	}
 
 }
