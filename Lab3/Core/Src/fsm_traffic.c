@@ -24,12 +24,7 @@ void fsm_traffic()
 	switch (mode)
 	{
 	case 1:
-	red_timer_temp0 = red_timer0;
-	green_timer_temp0 = green_timer0;
-	yellow_timer_temp0 = yellow_timer0;
-	red_timer_temp1 = red_timer1;
-	green_timer_temp1 = green_timer1;
-	yellow_timer_temp1 = yellow_timer1;
+
 	switch (status)
 	{
 		case START:
