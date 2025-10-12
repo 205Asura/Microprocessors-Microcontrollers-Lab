@@ -29,6 +29,6 @@ extern volatile uint8_t timer5_flag;
 
 void timer_run();
 
-#define TIMER_PERIOD_MS 10
+extern uint32_t TIMER_PERIOD_MS;
 
 #endif

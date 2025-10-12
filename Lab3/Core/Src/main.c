@@ -26,6 +26,7 @@
 #include "fsm_traffic.h"
 #include "led_display.h"
 #include "timer.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,9 +52,15 @@ TIM_HandleTypeDef htim2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+static uint32_t pre;
+static uint32_t per;
+
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
+uint32_t TIMER_PERIOD_MS;
+
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -95,6 +102,14 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM2_Init();
+  pre = htim2.Init.Prescaler + 1;
+  per = htim2.Init.Period + 1;
+  uint32_t system_clock = 8000000UL;  // Hz, từ HSI (hoặc dùng HAL_RCC_GetHCLKFreq() nếu clock động)
+
+  uint32_t timer_freq = system_clock / (pre + 1);
+  TIMER_PERIOD_MS = (1000UL * (per + 1)) / timer_freq;
+  // TIMER_PERIOD_MS = 10;
+
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
 
@@ -183,7 +198,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 7999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 9;
+  htim2.Init.Period = 99;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -204,6 +219,7 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
+
 
 }
 

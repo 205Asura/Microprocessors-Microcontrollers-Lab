@@ -21,8 +21,8 @@ volatile uint8_t timer5_flag = 0;
 
 
 
-static uint16_t timer2_1scount = 1000;
-static uint16_t timer3_1scount = 1000;
+static int timer2_1scount = 1000;
+static int timer3_1scount = 1000;
 
 
 void setTimer1(int duration)

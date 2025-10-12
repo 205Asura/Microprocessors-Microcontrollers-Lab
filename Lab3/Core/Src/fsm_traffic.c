@@ -80,12 +80,11 @@ void fsm_traffic()
 	}
 	break;
 
-	case 2:
-
+	case 2:;
 	if (timer1_flag == 1)
 	{
 		GPIOB->ODR ^= LED_RED0_Pin | LED_RED1_Pin;
-		setTimer1(100);
+		setTimer1(250);
 	}
 	GPIOB->BSRR = LED_GREEN0_Pin | LED_YELLOW0_Pin | LED_GREEN1_Pin | LED_YELLOW1_Pin;
 	break;
@@ -94,7 +93,7 @@ void fsm_traffic()
 	if (timer1_flag == 1)
 	{
 		GPIOB->ODR ^= LED_YELLOW0_Pin | LED_YELLOW1_Pin;
-		setTimer1(100);
+		setTimer1(250);
 	}
 	GPIOB->BSRR = LED_GREEN0_Pin | LED_RED0_Pin | LED_GREEN1_Pin | LED_RED1_Pin;
 	break;
@@ -103,7 +102,7 @@ void fsm_traffic()
 	if (timer1_flag == 1)
 	{
 		GPIOB->ODR ^= LED_GREEN0_Pin | LED_GREEN1_Pin;
-		setTimer1(100);
+		setTimer1(250);
 	}
 	GPIOB->BSRR = LED_YELLOW0_Pin | LED_RED0_Pin | LED_YELLOW1_Pin | LED_RED1_Pin;
 	break;
