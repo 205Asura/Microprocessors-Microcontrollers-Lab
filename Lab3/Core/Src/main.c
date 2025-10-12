@@ -262,13 +262,20 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pins : LED_RED0_Pin LED_GREEN0_Pin LED_YELLOW0_Pin SEG1_TIMER1_Pin
                            SEG2_TIMER1_Pin SEG3_TIMER1_Pin SEG4_TIMER1_Pin SEG5_TIMER1_Pin
                            SEG6_TIMER1_Pin LED_RED1_Pin LED_GREEN1_Pin LED_YELLOW1_Pin
-                           BUTTON_0_Pin BUTTON_1_Pin BUTTON_2_Pin SEG0_TIMER1_Pin */
+                           SEG0_TIMER1_Pin */
   GPIO_InitStruct.Pin = LED_RED0_Pin|LED_GREEN0_Pin|LED_YELLOW0_Pin|SEG1_TIMER1_Pin
                           |SEG2_TIMER1_Pin|SEG3_TIMER1_Pin|SEG4_TIMER1_Pin|SEG5_TIMER1_Pin
                           |SEG6_TIMER1_Pin|LED_RED1_Pin|LED_GREEN1_Pin|LED_YELLOW1_Pin
-                          |BUTTON_0_Pin|BUTTON_1_Pin|BUTTON_2_Pin|SEG0_TIMER1_Pin;
+                          |SEG0_TIMER1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BUTTON_0_Pin BUTTON_1_Pin BUTTON_2_Pin */
+  GPIO_InitStruct.Pin = BUTTON_0_Pin|BUTTON_1_Pin|BUTTON_2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 

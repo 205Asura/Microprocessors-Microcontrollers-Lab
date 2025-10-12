@@ -20,30 +20,46 @@ void fsm_for_input_processing(void) {
                 if (i == 0)
                 {  // Button 0: Tăng mode
                     mode++;
-                    if (mode == 2 && red_timer_temp != red_timer)
-                    	red_timer_temp = red_timer;
+                    if (mode == 2)
+                    {
+
+                    	red_timer_temp0 = red_timer0;
+
+
+                    }
                     else
-					if (mode == 3 && yellow_timer_temp != yellow_timer)
-						yellow_timer_temp = yellow_timer;
+					if (mode == 3)
+					{
+						yellow_timer_temp0 = yellow_timer0;
+
+
+					}
 					else
-					if (mode == 4 && green_timer_temp != green_timer)
-						green_timer_temp = green_timer;
+					if (mode == 4)
+					{
+						green_timer_temp0 = green_timer0;
+
+
+					}
                 }
-                else if (i == 1 && red_timer_temp < 99000)
+                else if (i == 1 && red_timer_temp0 < 99000)
                 {  // Button 1: Tăng timer_temp
                     switch (mode)
                     {
-                        case 2: green_timer_temp += 1000; red_timer_temp += 1000; break;
-                        case 3: yellow_timer_temp += 1000; red_timer_temp += 1000; break;
-                        case 4: green_timer_temp += 1000; red_timer_temp += 1000; break;
+                        case 2: red_timer_temp0 += 1000; break; // green_timer_temp1 += 1000; break;
+                        case 3: yellow_timer_temp0 += 1000; break;// red_timer_temp1 += 1000; break;
+                        case 4: green_timer_temp0 += 1000; break;// red_timer_temp1 += 1000; break;
                     }
                 }
                 else if (i == 2)
                 {  // Button 2: Apply temp và reset mode
                     mode = 1;
-                    red_timer = red_timer_temp;
-                    green_timer = green_timer_temp;
-                    yellow_timer = yellow_timer_temp;
+
+                    red_timer1 += (yellow_timer_temp0 - yellow_timer0) + (green_timer_temp0 - green_timer0);
+                    green_timer1 += (red_timer_temp0 - red_timer0);
+                    red_timer0 = red_timer_temp0;
+                    green_timer0 = green_timer_temp0;
+                    yellow_timer0 = yellow_timer_temp0;
                 }
             }
             break;
@@ -71,27 +87,39 @@ void fsm_for_input_processing(void) {
                 // Xử lý long press auto-increase per button
                 if (flagForIncreasingCounter[i] == 1)
                 {
-                    if (i == 0)
-                    {  // Button 0: Tăng mode tự động
-                        mode++;
-                        if (mode == 2 && red_timer_temp != red_timer)
-							red_timer_temp = red_timer;
+                	if (i == 0)
+					{  // Button 0: Tăng mode
+						mode++;
+						if (mode == 2)
+						{
+							red_timer_temp0 = red_timer0;
+							red_timer_temp1 = red_timer1;
+
+						}
 						else
-						if (mode == 3 && yellow_timer_temp != yellow_timer)
-							yellow_timer_temp = yellow_timer;
+						if (mode == 3)
+						{
+							yellow_timer_temp0 = yellow_timer0;
+							yellow_timer_temp1 = yellow_timer1;
+
+						}
 						else
-						if (mode == 4 && green_timer_temp != green_timer)
-							green_timer_temp = green_timer;
-                    }
-                    else if (i == 1 && red_timer < 99000)
-                    {  // Button 1: Tăng timer_temp tự động
-                        switch (mode)
-                        {
-                            case 2: green_timer_temp += 1000; red_timer_temp += 1000; break;
-                            case 3: yellow_timer_temp += 1000; red_timer_temp += 1000; break;
-                            case 4: green_timer_temp += 1000; red_timer_temp += 1000; break;
-                        }
-                    }
+						if (mode == 4)
+						{
+							green_timer_temp0 = green_timer0;
+							green_timer_temp1 = green_timer1;
+
+						}
+					}
+					else if (i == 1 && red_timer_temp0 < 99000)
+					{  // Button 1: Tăng timer_temp
+						switch (mode)
+						{
+							case 2: red_timer_temp0 += 1000; green_timer_temp1 += 1000; break;
+							case 3: yellow_timer_temp0 += 1000; red_timer_temp1 += 1000; break;
+							case 4: green_timer_temp0 += 1000; red_timer_temp1 += 1000; break;
+						}
+					}
 
                     flagForIncreasingCounter[i] = 0;
                 }
