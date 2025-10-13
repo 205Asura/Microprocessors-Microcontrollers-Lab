@@ -2,17 +2,12 @@
 #define INC_TIMER_H
 
 
-//extern volatile uint16_t timer1;
-//extern volatile uint32_t timer2;
-//extern volatile uint32_t timer3;
-//extern volatile uint16_t timer4;
-//extern volatile uint16_t timer5;
+
 
 extern volatile int timer1;
 extern volatile int timer2;
 extern volatile int timer3;
 extern volatile int timer4;
-extern volatile int timer5;
 
 extern int timer_line0;
 extern int timer_line1;
@@ -22,7 +17,6 @@ extern volatile uint8_t timer1_flag;
 extern volatile uint8_t timer2_flag;
 extern volatile uint8_t timer3_flag;
 extern volatile uint8_t timer4_flag;
-extern volatile uint8_t timer5_flag;
 
 
 

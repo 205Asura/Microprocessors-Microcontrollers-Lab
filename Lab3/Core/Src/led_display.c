@@ -52,7 +52,6 @@ static uint8_t bitmask0, bitmask1;
 void displayMode()
 {
 
-    // Chỉ cập nhật khi mode thay đổi
     if (mode != last_mode)
     {
         uint8_t bitmask = segments[mode];
@@ -69,7 +68,6 @@ void displayMode()
     }
 }
 
-// Trong led_display.c
 void displayTimer()
 {
 
@@ -110,6 +108,7 @@ void displayTimer()
     case 2:
     	led_buffer0[0] = red_timer_temp0 / 10000;
     	led_buffer0[1] = (red_timer_temp0 % 10000) / 1000;
+    	led_buffer1[0] = 0;
     	led_buffer1[1] = mode;
     	bitmask0 = segments[led_buffer0[current_digit]];
     	bitmask1 = segments[led_buffer1[current_digit]];
@@ -128,6 +127,7 @@ void displayTimer()
     case 3:
     	led_buffer0[0] = yellow_timer_temp0 / 10000;
 		led_buffer0[1] = (yellow_timer_temp0 % 10000) / 1000;
+    	led_buffer1[0] = 0;
 		led_buffer1[1] = mode;
 		bitmask0 = segments[led_buffer0[current_digit]];
 		bitmask1 = segments[led_buffer1[current_digit]];
@@ -147,6 +147,7 @@ void displayTimer()
 	case 4:
 		led_buffer0[0] = green_timer_temp0 / 10000;
 		led_buffer0[1] = (green_timer_temp0 % 10000) / 1000;
+    	led_buffer1[0] = 0;
 		led_buffer1[1] = mode;
 		bitmask0 = segments[led_buffer0[current_digit]];
 		bitmask1 = segments[led_buffer1[current_digit]];
@@ -164,7 +165,6 @@ void displayTimer()
 		break;
     }
 
-    // Chuyển digit
     GPIOA->BSRR = (reset_maskA << 16) | set_maskA;
     GPIOB->BSRR = (reset_maskB << 16) | set_maskB;
     current_digit++;

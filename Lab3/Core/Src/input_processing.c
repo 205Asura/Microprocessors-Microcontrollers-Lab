@@ -20,39 +20,63 @@ void fsm_for_input_processing(void) {
                 if (i == 0)
                 {  // Button 0: Tăng mode
                     mode++;
-                    if (mode == 2)
-                    {
-                    	red_timer_temp0 = red_timer0;
-                    }
-                    else
-					if (mode == 3)
-					{
-						yellow_timer_temp0 = yellow_timer0;
-					}
-					else
-					if (mode == 4)
-					{
-						green_timer_temp0 = green_timer0;
-					}
+
                 }
-                else if (i == 1 && red_timer_temp0 < 99000)
+                else if (i == 1)
                 {  // Button 1: Tăng timer_temp
-                    switch (mode)
-                    {
-                        case 2: red_timer_temp0 += 1000; break; // green_timer_temp1 += 1000; break;
-                        case 3: yellow_timer_temp0 += 1000; break;// red_timer_temp1 += 1000; break;
-                        case 4: green_timer_temp0 += 1000; break;// red_timer_temp1 += 1000; break;
-                    }
+                	switch (mode)
+                	{
+                	    case 2: // RED
+                	        if (red_timer_temp0 < 99000)
+                	        {
+                	            red_timer_temp0 += 1000;
+//                	            yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+                	        } else
+                	        {
+                	            red_timer_temp0 = 1000;
+                	            green_timer_temp0 = 1000;
+                	            yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+                	        }
+                	        // yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+                	        break;
+
+                	    case 3: // YELLOW
+
+                	        if (yellow_timer_temp0 < 99000) {
+                	            yellow_timer_temp0 += 1000;
+//                	            red_timer_temp0 = yellow_timer_temp0 + green_timer_temp0;
+
+                	        } else {
+                	            yellow_timer_temp0 = 1000;
+                	            green_timer_temp0 = red_timer_temp0 - yellow_timer_temp0;
+                	            //red_timer_temp0 = yellow_timer_temp0 + green_timer_temp0;
+                	        }
+                	        //
+                	        break;
+
+                	    case 4: // GREEN
+                	        if (green_timer_temp0 < 99000) {
+                	            green_timer_temp0 += 1000;
+//                	            yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+                	        } else {
+                	            green_timer_temp0 = 1000;
+                	            yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+                	            // red_timer_temp0 = yellow_timer_temp0 + green_timer_temp0;
+                	        }
+                	        //yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+                	        break;
+                	}
                 }
                 else if (i == 2)
                 {  // Button 2: Apply temp và reset mode
                     mode = 1;
 
-                    red_timer1 += (yellow_timer_temp0 - yellow_timer0) + (green_timer_temp0 - green_timer0);
-                    green_timer1 += (red_timer_temp0 - red_timer0);
-                    red_timer0 = red_timer_temp0;
-                    green_timer0 = green_timer_temp0;
-                    yellow_timer0 = yellow_timer_temp0;
+//                    red_timer1 = red_timer_temp1;
+//                    green_timer1 = green_timer_temp1;
+//                    yellow_timer1 = yellow_timer_temp1;
+                    red_timer0 += red_timer_temp0 - red_timer0;
+                    green_timer0 += green_timer_temp0 - green_timer0;
+                    yellow_timer0 += yellow_timer_temp0 - yellow_timer0;
                 }
             }
             break;
@@ -98,13 +122,48 @@ void fsm_for_input_processing(void) {
 							green_timer_temp0 = green_timer0;
 						}
 					}
-					else if (i == 1 && red_timer_temp0 < 99000)
+                	else if (i == 1)
 					{  // Button 1: Tăng timer_temp
-						switch (mode)
+                		switch (mode)
 						{
-							case 2: red_timer_temp0 += 1000; break;
-							case 3: yellow_timer_temp0 += 1000; break;
-							case 4: green_timer_temp0 += 1000; break;
+							case 2: // RED
+								if (red_timer_temp0 < 99000)
+								{
+									red_timer_temp0 += 1000;
+									green_timer_temp0 += 1000;
+								} else
+								{
+									red_timer_temp0 = 1000;
+									green_timer_temp0 = 1000;
+									yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+								}
+								// yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+								break;
+
+							case 3: // YELLOW
+
+								if (yellow_timer_temp0 < 99000) {
+									yellow_timer_temp0 += 1000;
+									red_timer_temp0 += 1000;
+								} else {
+									yellow_timer_temp0 = 1000;
+									green_timer_temp0 = red_timer_temp0 - yellow_timer_temp0;
+									//red_timer_temp0 = yellow_timer_temp0 + green_timer_temp0;
+								}
+								//
+								break;
+
+							case 4: // GREEN
+								if (green_timer_temp0 < 99000) {
+									green_timer_temp0 += 1000;
+									red_timer_temp0 += 1000;
+								} else {
+									green_timer_temp0 = 1000;
+									yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+									// red_timer_temp0 = yellow_timer_temp0 + green_timer_temp0;
+								}
+								//yellow_timer_temp0 = red_timer_temp0 - green_timer_temp0;
+								break;
 						}
 					}
 
