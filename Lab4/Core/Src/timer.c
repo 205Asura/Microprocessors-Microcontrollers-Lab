@@ -1,6 +1,6 @@
 #include "timer.h"
 #include "sched.h"
-
+#include "main.h"
 
 
 uint8_t timer1_flag = 0;
@@ -24,4 +24,13 @@ void setTimer1(uint32_t duration)
 	timer1_flag = 0;
 	timer1_counter = duration;
 	timer1_run_id = SCH_Add_Task(timer1_run, 0, 1);
+}
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM2) {
+    	SCH_Update();
+//    	timer1_run();
+    }
 }
