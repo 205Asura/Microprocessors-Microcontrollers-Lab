@@ -106,9 +106,11 @@ int main(void)
 //  SCH_Add_Task(LED_A3_BLINK, 2, 50);
 //  SCH_Add_Task(LED_A2_BLINK, 200, 0);
 //  SCH_Add_Task(traffic_auto, 0, 0);
-	SCH_Add_Task(LED_RED, 0, red_timer * 2);
-	SCH_Add_Task(LED_GREEN, red_timer, red_timer * 2);
-	SCH_Add_Task(LED_YELLOW, red_timer + green_timer, red_timer * 2);
+
+	SCH_Add_Task(traffic_auto, 0, 1);
+	SCH_Add_Task(updateSeg0Buffer, 1, 1);
+	SCH_Add_Task(display7Seg, 2, 1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -118,11 +120,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  if (timer1_flag)
-//	  {
-//		  HAL_GPIO_TogglePin(GPIOA, LED_A5_Pin);
-//		  setTimer1(500);
-//	  }
 	  SCH_Dispatch_Tasks();
   }
   /* USER CODE END 3 */
@@ -229,7 +226,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|SEG0_TIMER0_Pin
+                          |SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_TIMER0_Pin|SEG4_TIMER0_Pin
+                          |SEG5_TIMER0_Pin|SEG6_TIMER0_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED_A2_Pin LED_A3_Pin LED_A4_Pin LED_A5_Pin */
   GPIO_InitStruct.Pin = LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin;
@@ -238,8 +237,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin LED_YELLOW_Pin */
-  GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin;
+  /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin LED_YELLOW_Pin SEG0_TIMER0_Pin
+                           SEG1_TIMER0_Pin SEG2_TIMER0_Pin SEG3_TIMER0_Pin SEG4_TIMER0_Pin
+                           SEG5_TIMER0_Pin SEG6_TIMER0_Pin */
+  GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|SEG0_TIMER0_Pin
+                          |SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_TIMER0_Pin|SEG4_TIMER0_Pin
+                          |SEG5_TIMER0_Pin|SEG6_TIMER0_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

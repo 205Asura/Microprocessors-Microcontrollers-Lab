@@ -71,6 +71,20 @@ void Error_Handler(void);
 #define LED_GREEN_GPIO_Port GPIOB
 #define LED_YELLOW_Pin GPIO_PIN_2
 #define LED_YELLOW_GPIO_Port GPIOB
+#define SEG0_TIMER0_Pin GPIO_PIN_3
+#define SEG0_TIMER0_GPIO_Port GPIOB
+#define SEG1_TIMER0_Pin GPIO_PIN_4
+#define SEG1_TIMER0_GPIO_Port GPIOB
+#define SEG2_TIMER0_Pin GPIO_PIN_5
+#define SEG2_TIMER0_GPIO_Port GPIOB
+#define SEG3_TIMER0_Pin GPIO_PIN_6
+#define SEG3_TIMER0_GPIO_Port GPIOB
+#define SEG4_TIMER0_Pin GPIO_PIN_7
+#define SEG4_TIMER0_GPIO_Port GPIOB
+#define SEG5_TIMER0_Pin GPIO_PIN_8
+#define SEG5_TIMER0_GPIO_Port GPIOB
+#define SEG6_TIMER0_Pin GPIO_PIN_9
+#define SEG6_TIMER0_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 //#define SCH_REPORT_ERRORS
