@@ -37,20 +37,37 @@ void SCH_Init(void) {
 void SCH_Update(void) {
     unsigned char Index;
     // NOTE: calculations are in *TICKS* (not milliseconds)
-    for (Index = 0; Index < SCH_MAX_TASKS; Index++) {
+    for (Index = 0; Index < SCH_MAX_TASKS; Index++)
+    {
         // Check if there is a task at this location
-        if (SCH_tasks_G[Index].pTask) {
-            if (SCH_tasks_G[Index].Delay == 0) {
+        if (SCH_tasks_G[Index].pTask)
+        {
+            if (SCH_tasks_G[Index].Delay == 0)
+            {
                 // The task is due to run
                 // Inc. the 'RunMe' flag
                 SCH_tasks_G[Index].RunMe += 1;
-                if (SCH_tasks_G[Index].Period) {
+                if (SCH_tasks_G[Index].Period)
+                {
                     // Schedule periodic tasks to run again
                     SCH_tasks_G[Index].Delay = SCH_tasks_G[Index].Period;
                 }
-            } else {
+            }
+            else
+            {
                 // Not yet ready to run: just decrement the delay
                 SCH_tasks_G[Index].Delay -= 1;
+                if (SCH_tasks_G[Index].Delay == 0)
+				{
+					// The task is due to run
+					// Inc. the 'RunMe' flag
+					SCH_tasks_G[Index].RunMe += 1;
+					if (SCH_tasks_G[Index].Period)
+					{
+						// Schedule periodic tasks to run again
+						SCH_tasks_G[Index].Delay = SCH_tasks_G[Index].Period;
+					}
+				}
             }
         }
     }

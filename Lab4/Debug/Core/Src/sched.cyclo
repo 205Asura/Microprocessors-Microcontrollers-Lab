@@ -1,6 +1,6 @@
 ../Core/Src/sched.c:23:6:SCH_Init	2
 ../Core/Src/sched.c:37:6:SCH_Update	5
-../Core/Src/sched.c:63:15:SCH_Add_Task	4
-../Core/Src/sched.c:89:6:SCH_Dispatch_Tasks	4
-../Core/Src/sched.c:113:15:SCH_Delete_Task	2
-../Core/Src/sched.c:135:6:SCH_Report_Status	1
+../Core/Src/sched.c:80:15:SCH_Add_Task	4
+../Core/Src/sched.c:106:6:SCH_Dispatch_Tasks	4
+../Core/Src/sched.c:130:15:SCH_Delete_Task	2
+../Core/Src/sched.c:152:6:SCH_Report_Status	1

@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "sched.h"
 #include "task.h"
+#include "timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,15 +92,23 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(GPIOA, LED_A5_Pin | LED_A4_Pin | LED_A3_Pin | LED_A2_Pin, GPIO_PIN_SET);
+  /*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOA, LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin, GPIO_PIN_SET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin, GPIO_PIN_SET);
   HAL_TIM_Base_Start_IT(&htim2);
 
 
   SCH_Init();
-  SCH_Add_Task(LED_A5_BLINK, 0, 50);
-  SCH_Add_Task(LED_A4_BLINK, 1, 50);
-  SCH_Add_Task(LED_A3_BLINK, 2, 50);
-  SCH_Add_Task(LED_A2_BLINK, 200, 0);
+  SCH_Add_Task(LED_A5_BLINK, 0, 500);
+//  SCH_Add_Task(LED_A4_BLINK, 1, 50);
+//  SCH_Add_Task(LED_A3_BLINK, 2, 50);
+//  SCH_Add_Task(LED_A2_BLINK, 200, 0);
+//  SCH_Add_Task(traffic_auto, 0, 0);
+//	SCH_Add_Task(LED_RED, 0, red_timer * 2);
+//	SCH_Add_Task(LED_GREEN, red_timer, red_timer * 2);
+//	SCH_Add_Task(LED_YELLOW, red_timer + green_timer, red_timer * 2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -209,9 +218,13 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED_A2_Pin LED_A3_Pin LED_A4_Pin LED_A5_Pin */
   GPIO_InitStruct.Pin = LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin;
@@ -219,6 +232,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin LED_YELLOW_Pin */
+  GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
