@@ -1,3 +1,4 @@
-../Core/Src/timer.c:11:6:timer1_run	8	static
-../Core/Src/timer.c:31:6:setTimer1	16	static
-../Core/Src/timer.c:40:6:HAL_TIM_PeriodElapsedCallback	16	static
+../Core/Src/timer.c:13:6:timer_run	4	static
+../Core/Src/timer.c:37:6:setTimer1	16	static
+../Core/Src/timer.c:45:6:get_time	8	static
+../Core/Src/timer.c:50:6:HAL_TIM_PeriodElapsedCallback	16	static

@@ -44,6 +44,8 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim2;
 
+UART_HandleTypeDef huart1;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -52,13 +54,21 @@ TIM_HandleTypeDef htim2;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern UART_HandleTypeDef huart1;
+int _write(int file, char *ptr, int len)
+{
+  /* Gửi dữ liệu qua UART1 */
+  // HAL_MAX_DELAY nghĩa là hàm sẽ chờ cho đến khi gửi xong
+  HAL_UART_Transmit(&huart1, (uint8_t *)ptr, len, HAL_MAX_DELAY);
+  return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -91,6 +101,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM2_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   /*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOA, LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin, GPIO_PIN_SET);
@@ -101,15 +112,16 @@ int main(void)
 
 
   SCH_Init();
-//  SCH_Add_Task(LED_A5_BLINK, 0, 500);
-//  SCH_Add_Task(LED_A4_BLINK, 1, 50);
+  SCH_Add_Task(LED_A5_BLINK, 0, 500);
+  SCH_Add_Task(LED_A4_BLINK, 0, 50);
 //  SCH_Add_Task(LED_A3_BLINK, 2, 50);
 //  SCH_Add_Task(LED_A2_BLINK, 200, 0);
 //  SCH_Add_Task(traffic_auto, 0, 0);
-
-	SCH_Add_Task(traffic_auto, 0, 1);
-	SCH_Add_Task(updateSeg0Buffer, 1, 1);
-	SCH_Add_Task(display7Seg, 2, 1);
+//  	SCH_Add_Task(timer_run, 0, 1);
+//  	SCH_Add_Task(get_time, 0, 1);
+//	SCH_Add_Task(traffic_auto, 0, 10);
+//	SCH_Add_Task(updateSeg0Buffer, 0, 10);
+//	SCH_Add_Task(display7Seg, 0, 10);
 
   /* USER CODE END 2 */
 
@@ -203,6 +215,39 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 9600;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
 
 }
 

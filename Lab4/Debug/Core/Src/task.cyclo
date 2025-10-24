@@ -7,4 +7,4 @@
 ../Core/Src/task.c:64:6:LED_YELLOW	1
 ../Core/Src/task.c:69:6:updateSeg0Buffer	1
 ../Core/Src/task.c:74:6:display7Seg	3
-../Core/Src/task.c:91:6:traffic_auto	8
+../Core/Src/task.c:89:6:traffic_auto	8

@@ -68,7 +68,7 @@ void LED_YELLOW()
 
 void updateSeg0Buffer()
 {
-	seg_buffer[0] = timer1_counter / 100;
+	seg_buffer[0] = timer1 / 100;
 }
 
 void display7Seg()
@@ -81,18 +81,13 @@ void display7Seg()
 			reset_mask |= SEG_TIMER0[i];
 		else
 			(set_mask |= SEG_TIMER0[i]);
-//		HAL_GPIO_WritePin(GPIOB, SEG_TIMER0[i], mask & (1 << (6 - i)) ? RESET : SET);
 	}
 	GPIOB->BSRR = (reset_mask << 16) | set_mask;
-//	HAL_GPIO_WritePin(GPIOB, reset_mask, RESET);
-//	HAL_GPIO_WritePin(GPIOB, set_mask, SET);
+
 }
 
 void traffic_auto()
 {
-//	SCH_Add_Task(LED_RED, 0, red_timer * 2);
-//	SCH_Add_Task(LED_GREEN, red_timer, red_timer * 2);
-//	SCH_Add_Task(LED_YELLOW, red_timer + green_timer, red_timer * 2);
 	switch (state)
 	{
 	case INIT:
