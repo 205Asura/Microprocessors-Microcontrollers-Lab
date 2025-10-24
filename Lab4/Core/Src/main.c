@@ -112,16 +112,15 @@ int main(void)
 
 
   SCH_Init();
-  SCH_Add_Task(LED_A5_BLINK, 0, 500);
-  SCH_Add_Task(LED_A4_BLINK, 0, 50);
+//  SCH_Add_Task(LED_A5_BLINK, 0, 500);
+//  SCH_Add_Task(LED_A4_BLINK, 0, 50);
 //  SCH_Add_Task(LED_A3_BLINK, 2, 50);
 //  SCH_Add_Task(LED_A2_BLINK, 200, 0);
-//  SCH_Add_Task(traffic_auto, 0, 0);
-//  	SCH_Add_Task(timer_run, 0, 1);
-//  	SCH_Add_Task(get_time, 0, 1);
-//	SCH_Add_Task(traffic_auto, 0, 10);
-//	SCH_Add_Task(updateSeg0Buffer, 0, 10);
-//	SCH_Add_Task(display7Seg, 0, 10);
+  	SCH_Add_Task(timer_run, 0, 1);
+  	SCH_Add_Task(get_time, 0, 1);
+	SCH_Add_Task(traffic_auto, 0, 1);
+	SCH_Add_Task(updateSeg0Buffer, 0, 1);
+	SCH_Add_Task(display7Seg, 0, 1);
 
   /* USER CODE END 2 */
 
