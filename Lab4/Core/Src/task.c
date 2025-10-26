@@ -9,7 +9,7 @@ uint32_t red_timer = 500, green_timer = 300, yellow_timer = 200;
 uint8_t seg_counter = 0;
 
 
-enum traffic_states state = INIT;
+enum traffic_states state = RED;
 
 static uint8_t bitmask[10] =
 {
@@ -146,10 +146,10 @@ void traffic_auto()
 {
 	switch (state)
 	{
-	case INIT:
-		setTimer1(red_timer);
-		state = RED;
-		break;
+//	case INIT:
+//		setTimer1(red_timer);
+//		state = RED;
+//		break;
 	case RED:
 		GPIOA->BSRR = LED_RED_Pin << 16 | LED_GREEN_Pin | LED_YELLOW_Pin;
 		if (timer1_flag == 1)

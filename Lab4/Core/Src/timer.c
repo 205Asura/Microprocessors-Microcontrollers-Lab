@@ -2,6 +2,7 @@
 #include "sched.h"
 #include "main.h"
 #include "input_reading.h"
+#include "task.h"
 #include <stdio.h>
 #include <string.h>
 

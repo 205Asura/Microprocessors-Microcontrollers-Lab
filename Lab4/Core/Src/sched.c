@@ -3,6 +3,7 @@
 #include "timer.h"
 #include "input_processing.h"
 #include "input_reading.h"
+#include "task.h"
 #include <stdio.h>
 
 extern IWDG_HandleTypeDef hiwdg;
@@ -50,6 +51,7 @@ void SCH_Init(void) {
     // Reset the global error variable
     // - SCH_Delete_Task() will generate an error code,
     //   (because the task array is empty)
+    setTimer1(red_timer);
     SCH_Add_Task(timer_run, 0, 1);
     Error_code_G = 0;
 }
@@ -192,6 +194,7 @@ void SCH_Go_To_Sleep(void) {
 
 void SCH_Update(void) {
     // Chỉ kiểm tra task đầu tiên!
+//    timer_run();
     if (pHead != NULL) {
         // Giảm delay của task đầu tiên
         if (pHead->deltaDelay > 0) {
@@ -205,7 +208,6 @@ void SCH_Update(void) {
         }
     }
     HAL_IWDG_Refresh(&hiwdg);
-//    timer_run();
 }
 unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int PERIOD) {
     unsigned char Index = 0;
