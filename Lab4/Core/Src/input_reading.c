@@ -52,7 +52,6 @@ void button_reading(void)
                     flagForButtonPress1s[i] = 1;
                     // Handle long press auto-increase per button
                     increasingCounterPeriod[i] += TIMER_PERIOD_MS;
-                    printf("increasingCounterPeriod = %d\r\n", increasingCounterPeriod[i]);
                     if (increasingCounterPeriod[i] >= 50)
                     {  // Auto-increase every 500ms after 1s
                         increasingCounterPeriod[i] = 0;

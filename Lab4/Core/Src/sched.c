@@ -1,13 +1,15 @@
 #include "sched.h"
 #include "main.h"
 #include "timer.h"
+#include "input_processing.h"
+#include "input_reading.h"
 #include <stdio.h>
 
 extern IWDG_HandleTypeDef hiwdg;
 
 #define SCH_REPORT_ERRORS
-#define DEFAULT_MODE
-//#define LINKEDLIST_MODE
+//#define DEFAULT_MODE
+#define LINKEDLIST_MODE
 
 typedef struct sTask {
     // Pointer to the task (must be a 'void (void)' function)
@@ -48,7 +50,7 @@ void SCH_Init(void) {
     // Reset the global error variable
     // - SCH_Delete_Task() will generate an error code,
     //   (because the task array is empty)
-//    SCH_Add_Task(timer_run, 0, 1);
+    SCH_Add_Task(timer_run, 0, 1);
     Error_code_G = 0;
 }
 
@@ -145,7 +147,7 @@ void SCH_Dispatch_Tasks(void) {
         if (SCH_tasks_G[Index].RunMe > 0) {
             (*SCH_tasks_G[Index].pTask)();   // Run the task
 //            get_time();
-            if (SCH_tasks_G[Index].pTask != get_time)
+            if (SCH_tasks_G[Index].pTask != get_time && SCH_tasks_G[Index].pTask != button_reading && SCH_tasks_G[Index].pTask != fsm_for_input_processing)
             	printf("Task %d finished at: %d0 ms\r\n", Index, timer2);
             SCH_tasks_G[Index].RunMe -= 1;   // Reset / reduce RunMe flag
             // Periodic tasks will automatically run again
@@ -302,6 +304,8 @@ void SCH_Dispatch_Tasks(void) {
         // 1. Chạy task
         pHead->RunMe--;
         (*pFunction)();
+        if (pFunction != timer_run && pFunction != get_time && pFunction != button_reading && pFunction != fsm_for_input_processing)
+                    	printf("Task %d finished at: %d0 ms\r\n", TaskID, timer2);
 
         // 2. Xóa task khỏi danh sách (hàm này sẽ tự cập nhật pHead)
         SCH_Delete_Task(TaskID);
