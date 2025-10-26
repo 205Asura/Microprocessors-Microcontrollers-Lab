@@ -26,6 +26,9 @@
 #include "timer.h"
 #include "input_reading.h"
 #include "input_processing.h"
+#include "stm32f1xx_hal_iwdg.h"
+//#define GET_TASK_TIME
+//#define GET_CURRENT_TIME
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +47,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+IWDG_HandleTypeDef hiwdg;
+
 TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
@@ -57,13 +62,14 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart1;
 int _write(int file, char *ptr, int len)
 {
   /* Gửi dữ liệu qua UART1 */
@@ -104,31 +110,45 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   /*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, LED_A0_Pin|LED_A1_Pin|LED_A2_Pin|LED_A3_Pin
+                            |LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|EN0_Pin|EN1_Pin, GPIO_PIN_SET);
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin, GPIO_PIN_SET);
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOB, SEG0_TIMER0_Pin|SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_ERROR_Pin
+                            |SEG4_ERROR_Pin|SEG5_ERROR_Pin|SEG6_ERROR_Pin|SEG3_TIMER0_Pin
+                            |SEG4_TIMER0_Pin|SEG5_TIMER0_Pin|SEG6_TIMER0_Pin|SEG0_ERROR_Pin
+                            |SEG1_ERROR_Pin|SEG2_ERROR_Pin, GPIO_PIN_SET);
   HAL_TIM_Base_Start_IT(&htim2);
 
 
   SCH_Init();
 
 
-  	SCH_Add_Task(timer_run, 0, 1);
-  	SCH_Add_Task(get_time, 0, 1);
-  	SCH_Add_Task(LED_A2_BLINK, 200, 0);
-  	SCH_Add_Task(LED_A3_BLINK, 0, 50);
-  	SCH_Add_Task(LED_A4_BLINK, 0, 50);
-  	SCH_Add_Task(LED_A5_BLINK, 0, 500);
 
-  	SCH_Add_Task(button_reading, 0, 1);
-  	SCH_Add_Task(fsm_for_input_processing, 0, 1);
 
-	SCH_Add_Task(traffic_auto, 0, 1);
-	SCH_Add_Task(updateSegBuffer, 0, 1);
-	SCH_Add_Task(display7Seg0, 0, 1);
+
+
+  	SCH_Add_Task(LED_A0_BLINK, 200, 0);
+  	SCH_Add_Task(LED_A1_BLINK, 0, 50);
+  	SCH_Add_Task(LED_A2_BLINK, 400, 0);
+
+//  	SCH_Add_Task(button_reading, 0, 1);
+//  	SCH_Add_Task(fsm_for_input_processing, 0, 1);
+//
+//	SCH_Add_Task(traffic_auto, 0, 1);
+//	SCH_Add_Task(updateSegBuffer, 0, 1);
+//	SCH_Add_Task(display7Seg0, 0, 1);
+//	SCH_Add_Task(display7Seg1, 0, 1);
+
+
+//	SCH_Add_Task(display7Seg2, 0, 10);
+	SCH_Add_Task(get_time, 0, 1);
+
+	SCH_Add_Task(LED_A3_BLINK, 0, 500); // exceeded number of tasks
+
 
   /* USER CODE END 2 */
 
@@ -156,9 +176,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -178,6 +199,34 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Reload = 4095;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
+
 }
 
 /**
@@ -241,7 +290,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -275,15 +324,22 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LED_A0_Pin|LED_A1_Pin|LED_A2_Pin|LED_A3_Pin
+                          |LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|EN0_Pin
+                          |EN1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|SEG0_TIMER0_Pin
-                          |SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_TIMER0_Pin|SEG4_TIMER0_Pin
-                          |SEG5_TIMER0_Pin|SEG6_TIMER0_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, SEG0_TIMER0_Pin|SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_ERROR_Pin
+                          |SEG4_ERROR_Pin|SEG5_ERROR_Pin|SEG6_ERROR_Pin|SEG3_TIMER0_Pin
+                          |SEG4_TIMER0_Pin|SEG5_TIMER0_Pin|SEG6_TIMER0_Pin|SEG0_ERROR_Pin
+                          |SEG1_ERROR_Pin|SEG2_ERROR_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LED_A2_Pin LED_A3_Pin LED_A4_Pin LED_A5_Pin */
-  GPIO_InitStruct.Pin = LED_A2_Pin|LED_A3_Pin|LED_A4_Pin|LED_A5_Pin;
+  /*Configure GPIO pins : LED_A0_Pin LED_A1_Pin LED_A2_Pin LED_A3_Pin
+                           LED_RED_Pin LED_GREEN_Pin LED_YELLOW_Pin EN0_Pin
+                           EN1_Pin */
+  GPIO_InitStruct.Pin = LED_A0_Pin|LED_A1_Pin|LED_A2_Pin|LED_A3_Pin
+                          |LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|EN0_Pin
+                          |EN1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -295,12 +351,14 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(BUTTON_0_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin LED_YELLOW_Pin SEG0_TIMER0_Pin
-                           SEG1_TIMER0_Pin SEG2_TIMER0_Pin SEG3_TIMER0_Pin SEG4_TIMER0_Pin
-                           SEG5_TIMER0_Pin SEG6_TIMER0_Pin */
-  GPIO_InitStruct.Pin = LED_RED_Pin|LED_GREEN_Pin|LED_YELLOW_Pin|SEG0_TIMER0_Pin
-                          |SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_TIMER0_Pin|SEG4_TIMER0_Pin
-                          |SEG5_TIMER0_Pin|SEG6_TIMER0_Pin;
+  /*Configure GPIO pins : SEG0_TIMER0_Pin SEG1_TIMER0_Pin SEG2_TIMER0_Pin SEG3_ERROR_Pin
+                           SEG4_ERROR_Pin SEG5_ERROR_Pin SEG6_ERROR_Pin SEG3_TIMER0_Pin
+                           SEG4_TIMER0_Pin SEG5_TIMER0_Pin SEG6_TIMER0_Pin SEG0_ERROR_Pin
+                           SEG1_ERROR_Pin SEG2_ERROR_Pin */
+  GPIO_InitStruct.Pin = SEG0_TIMER0_Pin|SEG1_TIMER0_Pin|SEG2_TIMER0_Pin|SEG3_ERROR_Pin
+                          |SEG4_ERROR_Pin|SEG5_ERROR_Pin|SEG6_ERROR_Pin|SEG3_TIMER0_Pin
+                          |SEG4_TIMER0_Pin|SEG5_TIMER0_Pin|SEG6_TIMER0_Pin|SEG0_ERROR_Pin
+                          |SEG1_ERROR_Pin|SEG2_ERROR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

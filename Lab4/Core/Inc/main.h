@@ -57,38 +57,57 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LED_A0_Pin GPIO_PIN_0
+#define LED_A0_GPIO_Port GPIOA
+#define LED_A1_Pin GPIO_PIN_1
+#define LED_A1_GPIO_Port GPIOA
 #define LED_A2_Pin GPIO_PIN_2
 #define LED_A2_GPIO_Port GPIOA
 #define LED_A3_Pin GPIO_PIN_3
 #define LED_A3_GPIO_Port GPIOA
-#define LED_A4_Pin GPIO_PIN_4
-#define LED_A4_GPIO_Port GPIOA
-#define LED_A5_Pin GPIO_PIN_5
-#define LED_A5_GPIO_Port GPIOA
-#define BUTTON_0_Pin GPIO_PIN_6
+#define LED_RED_Pin GPIO_PIN_4
+#define LED_RED_GPIO_Port GPIOA
+#define LED_GREEN_Pin GPIO_PIN_5
+#define LED_GREEN_GPIO_Port GPIOA
+#define LED_YELLOW_Pin GPIO_PIN_6
+#define LED_YELLOW_GPIO_Port GPIOA
+#define BUTTON_0_Pin GPIO_PIN_7
 #define BUTTON_0_GPIO_Port GPIOA
-#define LED_RED_Pin GPIO_PIN_0
-#define LED_RED_GPIO_Port GPIOB
-#define LED_GREEN_Pin GPIO_PIN_1
-#define LED_GREEN_GPIO_Port GPIOB
-#define LED_YELLOW_Pin GPIO_PIN_2
-#define LED_YELLOW_GPIO_Port GPIOB
-#define SEG0_TIMER0_Pin GPIO_PIN_3
+#define SEG0_TIMER0_Pin GPIO_PIN_0
 #define SEG0_TIMER0_GPIO_Port GPIOB
-#define SEG1_TIMER0_Pin GPIO_PIN_4
+#define SEG1_TIMER0_Pin GPIO_PIN_1
 #define SEG1_TIMER0_GPIO_Port GPIOB
-#define SEG2_TIMER0_Pin GPIO_PIN_5
+#define SEG2_TIMER0_Pin GPIO_PIN_2
 #define SEG2_TIMER0_GPIO_Port GPIOB
-#define SEG3_TIMER0_Pin GPIO_PIN_6
+#define SEG3_ERROR_Pin GPIO_PIN_10
+#define SEG3_ERROR_GPIO_Port GPIOB
+#define SEG4_ERROR_Pin GPIO_PIN_11
+#define SEG4_ERROR_GPIO_Port GPIOB
+#define SEG5_ERROR_Pin GPIO_PIN_12
+#define SEG5_ERROR_GPIO_Port GPIOB
+#define SEG6_ERROR_Pin GPIO_PIN_13
+#define SEG6_ERROR_GPIO_Port GPIOB
+#define EN0_Pin GPIO_PIN_11
+#define EN0_GPIO_Port GPIOA
+#define EN1_Pin GPIO_PIN_12
+#define EN1_GPIO_Port GPIOA
+#define SEG3_TIMER0_Pin GPIO_PIN_3
 #define SEG3_TIMER0_GPIO_Port GPIOB
-#define SEG4_TIMER0_Pin GPIO_PIN_7
+#define SEG4_TIMER0_Pin GPIO_PIN_4
 #define SEG4_TIMER0_GPIO_Port GPIOB
-#define SEG5_TIMER0_Pin GPIO_PIN_8
+#define SEG5_TIMER0_Pin GPIO_PIN_5
 #define SEG5_TIMER0_GPIO_Port GPIOB
-#define SEG6_TIMER0_Pin GPIO_PIN_9
+#define SEG6_TIMER0_Pin GPIO_PIN_6
 #define SEG6_TIMER0_GPIO_Port GPIOB
+#define SEG0_ERROR_Pin GPIO_PIN_7
+#define SEG0_ERROR_GPIO_Port GPIOB
+#define SEG1_ERROR_Pin GPIO_PIN_8
+#define SEG1_ERROR_GPIO_Port GPIOB
+#define SEG2_ERROR_Pin GPIO_PIN_9
+#define SEG2_ERROR_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+void Watchdog_init();
 //#define SCH_REPORT_ERRORS
 
 #ifdef SCH_REPORT_ERRORS

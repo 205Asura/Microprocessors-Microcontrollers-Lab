@@ -8,12 +8,12 @@ extern enum traffic_states state;
 
 extern uint32_t red_timer, green_timer, yellow_timer;
 extern uint8_t seg_counter;
-extern uint8_t seg_buffer[2];
+extern uint8_t seg_buffer[3];
 
-void LED_A5_BLINK();
-void LED_A4_BLINK();
-void LED_A3_BLINK();
+void LED_A0_BLINK();
+void LED_A1_BLINK();
 void LED_A2_BLINK();
+void LED_A3_BLINK();
 
 void LED_RED();
 void LED_GREEN();
@@ -21,6 +21,9 @@ void LED_YELLOW();
 
 void traffic_auto();
 void display7Seg0();
+void display7Seg1();
+void display7Seg2();
+
 void updateSegBuffer();
 
 
