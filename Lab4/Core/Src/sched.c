@@ -306,7 +306,7 @@ void SCH_Dispatch_Tasks(void) {
         // 1. Chạy task
         pHead->RunMe--;
         (*pFunction)();
-        if (pFunction != timer_run && pFunction != get_time && pFunction != button_reading && pFunction != fsm_for_input_processing)
+        if (pFunction != timer_run && pFunction != get_time && pFunction != button_reading && pFunction != fsm_for_input_processing && pFunction != updateSegBuffer)
                     	printf("Task %d finished at: %d0 ms\r\n", TaskID, timer2);
 
         // 2. Xóa task khỏi danh sách (hàm này sẽ tự cập nhật pHead)

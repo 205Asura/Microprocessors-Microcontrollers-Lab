@@ -66,13 +66,13 @@ void LED_A0_BLINK()
 void updateSegBuffer()
 {
 
-	seg_buffer[0] = timer1 / 100;
-	seg_buffer[1] = seg_counter;
-	seg_buffer[2] = Error_code_G;
+	seg_buffer[0] = seg_counter;
+	seg_buffer[1] = Error_code_G;
+	seg_buffer[2] = timer1 / 100;
 }
-static uint8_t index_buffer = 1;
+static uint8_t index_buffer = 2;
 
-void display7Seg0()
+void display7Seg0() // BUTTON
 {
 
 	int mask = bitmask[seg_buffer[0]];
@@ -89,28 +89,28 @@ void display7Seg0()
 
 }
 
-void display7Seg1()
+void display7Seg1() // Error
 {
-	GPIOA->BSRR |= EN0_Pin << 16 | EN1_Pin;
+	GPIOA->BSRR = EN1_Pin << 16 | EN0_Pin;
 	int mask = bitmask[seg_buffer[1]];
 	int reset_mask = 0, set_mask = 0;
 	for (int i = 0; i < 7; i++)
 	{
 		if (mask & (1 << (6 - i)))
-			reset_mask |= SEG_ERROR[i];
+			reset_mask |= SEG_TIMER0[i];
 		else
-			(set_mask |= SEG_ERROR[i]);
+			(set_mask |= SEG_TIMER0[i]);
 	}
 	GPIOB->BSRR = (reset_mask << 16) | set_mask;
 
 }
 
-void display7Seg2()
+void display7Seg2() // TRAFFIC + ERROR
 {
 	if (index_buffer == 1)
-		GPIOA->BSRR |= EN0_Pin << 16 | EN1_Pin;
+		GPIOA->BSRR = EN1_Pin << 16 | EN0_Pin;
 	else
-		GPIOA->BSRR |= EN1_Pin << 16 | EN0_Pin;
+		GPIOA->BSRR = EN0_Pin << 16 | EN1_Pin;
 	int mask = bitmask[seg_buffer[index_buffer++]];
 	int reset_mask = 0, set_mask = 0;
 //	printf("sef_buffer[2] = %d\r\n", Error_code_G);
