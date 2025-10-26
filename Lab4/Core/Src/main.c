@@ -131,9 +131,9 @@ int main(void)
 
 
 
-  	SCH_Add_Task(LED_A0_BLINK, 200, 0);
-  	SCH_Add_Task(LED_A1_BLINK, 0, 50);
-  	SCH_Add_Task(LED_A2_BLINK, 400, 0);
+  	SCH_Add_Task(LED_A0_BLINK, 0, 50);
+  	SCH_Add_Task(LED_A1_BLINK, 1, 50);
+  	SCH_Add_Task(LED_A2_BLINK, 200, 0);
 
 //  	SCH_Add_Task(button_reading, 0, 1);
 //  	SCH_Add_Task(fsm_for_input_processing, 0, 1);
@@ -147,7 +147,7 @@ int main(void)
 //	SCH_Add_Task(display7Seg2, 0, 10);
 	SCH_Add_Task(get_time, 0, 1);
 
-	SCH_Add_Task(LED_A3_BLINK, 0, 500); // exceeded number of tasks
+//	SCH_Add_Task(LED_A3_BLINK, 0, 500); // exceeded number of tasks
 
 
   /* USER CODE END 2 */

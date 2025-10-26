@@ -145,7 +145,8 @@ void SCH_Dispatch_Tasks(void) {
         if (SCH_tasks_G[Index].RunMe > 0) {
             (*SCH_tasks_G[Index].pTask)();   // Run the task
 //            get_time();
-
+            if (SCH_tasks_G[Index].pTask != get_time)
+            	printf("Task %d finished at: %d0 ms\r\n", Index, timer2);
             SCH_tasks_G[Index].RunMe -= 1;   // Reset / reduce RunMe flag
             // Periodic tasks will automatically run again
             // - if this is a 'one shot' task, remove it from the array

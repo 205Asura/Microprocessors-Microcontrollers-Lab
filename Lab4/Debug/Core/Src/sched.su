@@ -3,5 +3,5 @@
 ../Core/Src/sched.c:93:15:SCH_Add_Task	32	static
 ../Core/Src/sched.c:119:15:SCH_Delete_Task	24	static
 ../Core/Src/sched.c:141:6:SCH_Dispatch_Tasks	16	static
-../Core/Src/sched.c:166:6:SCH_Go_To_Sleep	16	static,ignoring_inline_asm
-../Core/Src/sched.c:382:6:SCH_Report_Status	4	static
+../Core/Src/sched.c:167:6:SCH_Go_To_Sleep	16	static,ignoring_inline_asm
+../Core/Src/sched.c:383:6:SCH_Report_Status	4	static
