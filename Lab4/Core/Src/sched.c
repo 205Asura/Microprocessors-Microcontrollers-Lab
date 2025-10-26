@@ -1,9 +1,11 @@
 #include "sched.h"
 #include "main.h"
+#include "timer.h"
 #include <stdio.h>
 
-#define DEFAULT_MODE
-//#define LINKEDLIST_MODE
+//#define SCH_REPORT_ERRORS
+//#define DEFAULT_MODE
+#define LINKEDLIST_MODE
 
 typedef struct sTask {
     // Pointer to the task (must be a 'void (void)' function)
@@ -61,6 +63,7 @@ void SCH_Init(void) {
 #ifdef DEFAULT_MODE
 void SCH_Update(void) {
     unsigned char Index;
+    timer2++;
     // NOTE: calculations are in *TICKS* (not milliseconds)
     for (Index = 0; Index < SCH_MAX_TASKS; Index++)
     {
@@ -165,9 +168,31 @@ void SCH_Dispatch_Tasks(void) {
     SCH_Report_Status();
 
     // The scheduler enters idle mode at this point
-    // SCH_Go_To_Sleep();
+//     SCH_Go_To_Sleep();
+}
+
+
+void SCH_Go_To_Sleep(void) {
+    uint8_t hasPendingTasks = 0;
+
+
+    // Kiểm tra cho array-based scheduler
+    for (unsigned char i = 0; i < SCH_MAX_TASKS; i++) {
+        if (SCH_tasks_G[i].pTask != 0 && SCH_tasks_G[i].RunMe > 0) {
+            hasPendingTasks = 1;
+            break;
+        }
+    }
+    // Chỉ vào sleep nếu không có task nào cần chạy ngay
+    if (!hasPendingTasks) {
+        // Có thể thêm delay ngắn để tránh vào/ra sleep liên tục
+        // HAL_Delay(1); // Tùy chọn
+        __WFI();
+    }
 }
 #endif
+
+
 
 #ifdef LINKEDLIST_MODE
 
@@ -273,7 +298,7 @@ unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int
 void SCH_Dispatch_Tasks(void) {
     // Chạy tất cả các task ở đầu danh sách mà có RunMe > 0
     // (Xử lý trường hợp nhiều task chạy cùng 1 tick)
-    while (pHead != NULL && pHead->RunMe > 0) {
+    if (pHead != NULL) {
 
         sTask* pTaskToRun = pHead; // Lấy task đầu tiên
 
@@ -297,7 +322,22 @@ void SCH_Dispatch_Tasks(void) {
 
     // ...
     // SCH_Report_Status();
-    // SCH_Go_To_Sleep();
+//    SCH_Go_To_Sleep();
+}
+
+void SCH_Go_To_Sleep(void) {
+    uint8_t hasPendingTasks = 0;
+
+    // Kiểm tra cho linked list scheduler
+    if (pHead != NULL && pHead->RunMe > 0) {
+        hasPendingTasks = 1;
+    }
+    // Chỉ vào sleep nếu không có task nào cần chạy ngay
+    if (!hasPendingTasks) {
+        // Có thể thêm delay ngắn để tránh vào/ra sleep liên tục
+        // HAL_Delay(1); // Tùy chọn
+        __WFI();
+    }
 }
 
 //====================================================================

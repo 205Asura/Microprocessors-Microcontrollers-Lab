@@ -24,6 +24,8 @@
 #include "sched.h"
 #include "task.h"
 #include "timer.h"
+#include "input_reading.h"
+#include "input_processing.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,15 +114,21 @@ int main(void)
 
 
   SCH_Init();
-//  SCH_Add_Task(LED_A5_BLINK, 0, 500);
-//  SCH_Add_Task(LED_A4_BLINK, 0, 50);
-//  SCH_Add_Task(LED_A3_BLINK, 2, 50);
-//  SCH_Add_Task(LED_A2_BLINK, 200, 0);
+
+
   	SCH_Add_Task(timer_run, 0, 1);
   	SCH_Add_Task(get_time, 0, 1);
+  	SCH_Add_Task(LED_A2_BLINK, 200, 0);
+  	SCH_Add_Task(LED_A3_BLINK, 0, 50);
+  	SCH_Add_Task(LED_A4_BLINK, 0, 50);
+  	SCH_Add_Task(LED_A5_BLINK, 0, 500);
+
+  	SCH_Add_Task(button_reading, 0, 1);
+  	SCH_Add_Task(fsm_for_input_processing, 0, 1);
+
 	SCH_Add_Task(traffic_auto, 0, 1);
-	SCH_Add_Task(updateSeg0Buffer, 0, 1);
-	SCH_Add_Task(display7Seg, 0, 1);
+	SCH_Add_Task(updateSegBuffer, 0, 1);
+	SCH_Add_Task(display7Seg0, 0, 1);
 
   /* USER CODE END 2 */
 
@@ -280,6 +288,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : BUTTON_0_Pin */
+  GPIO_InitStruct.Pin = BUTTON_0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(BUTTON_0_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_RED_Pin LED_GREEN_Pin LED_YELLOW_Pin SEG0_TIMER0_Pin
                            SEG1_TIMER0_Pin SEG2_TIMER0_Pin SEG3_TIMER0_Pin SEG4_TIMER0_Pin

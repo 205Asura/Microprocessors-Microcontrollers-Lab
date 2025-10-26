@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "sched.h"
 #include "main.h"
+#include "input_reading.h"
 #include <stdio.h>
 
 
@@ -15,13 +16,7 @@ void timer_run()
 
 	if (timer1 > 0)
 	{
-		timer1_1s_counter--;
-		if (timer1_1s_counter == 0)
-		{
-			timer1 -= 100;
-			timer1_1s_counter = 100;
-
-		}
+		timer1--;
 	}
 
 	timer2++;

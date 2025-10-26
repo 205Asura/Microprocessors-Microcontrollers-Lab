@@ -4,6 +4,8 @@
 #include "main.h"
 
 uint32_t red_timer = 500, green_timer = 300, yellow_timer = 200;
+uint8_t seg_counter = 0;
+
 
 enum traffic_states state = INIT;
 
@@ -66,14 +68,16 @@ void LED_YELLOW()
 	GPIOB->BSRR = LED_RED_Pin | LED_GREEN_Pin | LED_YELLOW_Pin << 16;
 }
 
-void updateSeg0Buffer()
+void updateSegBuffer()
 {
-	seg_buffer[0] = timer1 / 100;
+	if (timer1 % 100 == 0)
+		seg_buffer[0] = timer1 / 100;
+	seg_buffer[1] = seg_counter;
 }
 
-void display7Seg()
+void display7Seg0()
 {
-	int mask = bitmask[seg_buffer[0]];
+	int mask = bitmask[seg_buffer[1]];
 	int reset_mask = 0, set_mask = 0;
 	for (int i = 0; i < 7; i++)
 	{
@@ -85,6 +89,20 @@ void display7Seg()
 	GPIOB->BSRR = (reset_mask << 16) | set_mask;
 
 }
+
+//void display7Seg1()
+//{
+//	int mask = bitmask[seg_buffer[1]];
+//		int reset_mask = 0, set_mask = 0;
+//		for (int i = 0; i < 7; i++)
+//		{
+//			if (mask & (1 << (6 - i)))
+//				reset_mask |= SEG_TIMER1[i];
+//			else
+//				(set_mask |= SEG_TIMER1[i]);
+//		}
+//		GPIOB->BSRR = (reset_mask << 16) | set_mask;
+//}
 
 void traffic_auto()
 {

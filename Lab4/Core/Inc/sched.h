@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // MUST BE ADJUSTED FOR EACH NEW PROJECT
-#define SCH_MAX_TASKS   10
+#define SCH_MAX_TASKS   11
 #define NO_TASK_ID      0
 
 
@@ -14,6 +14,7 @@ unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int
 void SCH_Dispatch_Tasks(void);
 unsigned char SCH_Delete_Task(const uint8_t TASK_INDEX);
 void SCH_Report_Status(void);
+void SCH_Go_To_Sleep();
 
 extern unsigned char Error_code_G;
 extern unsigned char Last_error_code_G;

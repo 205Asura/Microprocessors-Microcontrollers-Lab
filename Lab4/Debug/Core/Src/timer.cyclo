@@ -1,4 +1,4 @@
-../Core/Src/timer.c:13:6:timer_run	4
-../Core/Src/timer.c:37:6:setTimer1	1
-../Core/Src/timer.c:45:6:get_time	1
-../Core/Src/timer.c:50:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/timer.c:14:6:timer_run	3
+../Core/Src/timer.c:32:6:setTimer1	1
+../Core/Src/timer.c:40:6:get_time	1
+../Core/Src/timer.c:45:6:HAL_TIM_PeriodElapsedCallback	2
