@@ -26,7 +26,7 @@
 #include "timer.h"
 #include "input_reading.h"
 #include "input_processing.h"
-#include "stm32f1xx_hal_iwdg.h"
+//#include "stm32f1xx_hal_iwdg.h"
 //#define GET_TASK_TIME
 //#define GET_CURRENT_TIME
 /* USER CODE END Includes */
@@ -47,8 +47,6 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-IWDG_HandleTypeDef hiwdg;
-
 TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
@@ -62,7 +60,6 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART1_UART_Init(void);
-static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -110,7 +107,6 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
-  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
   /*Configure GPIO pin Output Level */
     HAL_GPIO_WritePin(GPIOA, LED_A0_Pin|LED_A1_Pin|LED_A2_Pin|LED_A3_Pin
@@ -130,26 +126,35 @@ int main(void)
 
 
 
+  	SCH_Add_Task(LED_A0_BLINK, -1, 50);
+  	SCH_Add_Task(LED_A1_BLINK, 50, 0);
+  	SCH_Add_Task(LED_A2_BLINK, 1, -50);
+  	SCH_Add_Task(LED_A3_BLINK, 1, 50);
+  	SCH_Add_Task(LED_RED_BLINK, 1, 50);
 
 //  	SCH_Add_Task(LED_A0_BLINK, 0, 50);
-//  	SCH_Add_Task(LED_A1_BLINK, 100, 0);
-//  	SCH_Add_Task(LED_A2_BLINK, 0, 100);
+//	SCH_Add_Task(LED_A1_BLINK, 0, 50);
+//	SCH_Add_Task(LED_A2_BLINK, 50, 0);
+//	SCH_Add_Task(LED_A3_BLINK, 0, 50);
+//	SCH_Add_Task(LED_RED_BLINK, 0, 50);
 
-  	SCH_Add_Task(button_reading, 0, 1);
-  	SCH_Add_Task(fsm_for_input_processing, 0, 1);
+
+//  	SCH_Add_Task(button_reading, 0, 1);
+//  	SCH_Add_Task(fsm_for_input_processing, 0, 1);
 
 //
-//	SCH_Add_Task(traffic_auto, 0, 10);
 	SCH_Add_Task(updateSegBuffer, 0, 1);
-	SCH_Add_Task(display7Seg0, 0, 10); // button
+	SCH_Add_Task(SCH_Report_Status, 0, 1);
+//	SCH_Add_Task(display7Seg0, 0, 10); // button
 //	SCH_Add_Task(display7Seg1, 0, 1); // traffic
 
 
 	SCH_Add_Task(display7Seg2, 0, 10); // traffic + error
 
-	SCH_Add_Task(get_time, 0, 1);
 
-//	SCH_Add_Task(LED_A3_BLINK, 0, 500); // exceeded number of tasks
+//    SCH_Add_Task(get_time, 0, 1);
+
+
 
 
   /* USER CODE END 2 */
@@ -178,10 +183,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -201,34 +205,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-}
-
-/**
-  * @brief IWDG Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_IWDG_Init(void)
-{
-
-  /* USER CODE BEGIN IWDG_Init 0 */
-
-  /* USER CODE END IWDG_Init 0 */
-
-  /* USER CODE BEGIN IWDG_Init 1 */
-
-  /* USER CODE END IWDG_Init 1 */
-  hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
-  hiwdg.Init.Reload = 4095;
-  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN IWDG_Init 2 */
-
-  /* USER CODE END IWDG_Init 2 */
-
 }
 
 /**

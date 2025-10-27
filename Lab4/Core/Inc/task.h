@@ -15,7 +15,7 @@ void LED_A1_BLINK();
 void LED_A2_BLINK();
 void LED_A3_BLINK();
 
-void LED_RED();
+void LED_RED_BLINK();
 void LED_GREEN();
 void LED_YELLOW();
 

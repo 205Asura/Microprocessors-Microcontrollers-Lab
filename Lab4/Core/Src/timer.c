@@ -81,6 +81,7 @@ void setTimer1(uint32_t duration)
 
 void get_time()
 {
+	timer2++;
 	printf("Current time: %d0 ms\r\n", timer2);
 }
 

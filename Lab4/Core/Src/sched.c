@@ -6,11 +6,11 @@
 #include "task.h"
 #include <stdio.h>
 
-extern IWDG_HandleTypeDef hiwdg;
+//extern IWDG_HandleTypeDef hiwdg;
 
 #define SCH_REPORT_ERRORS
-//#define DEFAULT_MODE
-#define LINKEDLIST_MODE
+#define DEFAULT_MODE
+//#define LINKEDLIST_MODE
 
 typedef struct sTask {
     // Pointer to the task (must be a 'void (void)' function)
@@ -38,7 +38,8 @@ sTask SCH_tasks_G[SCH_MAX_TASKS];
 unsigned char Error_code_G = 0;
 unsigned char Last_error_code_G = 0;
 uint32_t Error_tick_count_G = 0;
-
+static int currentTaskID = 0;
+static int numberOfTask = 0;
 
 
 void SCH_Init(void) {
@@ -51,9 +52,9 @@ void SCH_Init(void) {
     // Reset the global error variable
     // - SCH_Delete_Task() will generate an error code,
     //   (because the task array is empty)
-    setTimer1(red_timer);
-    SCH_Add_Task(timer_run, 0, 1);
+
     Error_code_G = 0;
+
 }
 
 
@@ -69,7 +70,6 @@ void SCH_Init(void) {
 #ifdef DEFAULT_MODE
 void SCH_Update(void) {
     unsigned char Index;
-    timer_run();
 
     // NOTE: calculations are in *TICKS* (not milliseconds)
     for (Index = 0; Index < SCH_MAX_TASKS; Index++)
@@ -77,7 +77,7 @@ void SCH_Update(void) {
         // Check if there is a task at this location
     	if (SCH_tasks_G[Index].Delay > 0)
     		SCH_tasks_G[Index].Delay--;
-        if (SCH_tasks_G[Index].pTask)
+        if (SCH_tasks_G[Index].pTask != NULL)
         {
             if (SCH_tasks_G[Index].Delay == 0)
             {
@@ -92,12 +92,18 @@ void SCH_Update(void) {
             }
         }
     }
-    HAL_IWDG_Refresh(&hiwdg);
+//    HAL_IWDG_Refresh(&hiwdg);
 }
 unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int PERIOD) {
+
+	if ((int)DELAY < 0 || (int)PERIOD < 0)
+		{
+			Error_code_G = ERROR_NEGATIVE;
+			return RETURN_ERROR;
+		}
     unsigned char Index = 0;
     // First find a gap in the array (if there is one)
-    while ((SCH_tasks_G[Index].pTask != 0) && (Index < SCH_MAX_TASKS)) {
+    while ((SCH_tasks_G[Index].pTask != NULL) && (Index < SCH_MAX_TASKS)) {
         Index++;
     }
 
@@ -115,6 +121,8 @@ unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int
     SCH_tasks_G[Index].Delay  = DELAY;
     SCH_tasks_G[Index].Period = PERIOD;
     SCH_tasks_G[Index].RunMe  = 0;
+    SCH_tasks_G[Index].TaskID = currentTaskID++;;
+    numberOfTask++;
 
     // Return position of task (to allow later deletion)
     return Index;
@@ -123,21 +131,30 @@ unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int
 unsigned char SCH_Delete_Task(const uint8_t TASK_INDEX) {
     unsigned char Return_code;
 
-    if (TASK_INDEX >= SCH_MAX_TASKS || SCH_tasks_G[TASK_INDEX].pTask == 0) {
+    if (numberOfTask == 0)
+    {
+    	Error_code_G = ERROR_NO_TASK;
+    	return RETURN_ERROR;
+
+    }
+    if (TASK_INDEX >= SCH_MAX_TASKS || SCH_tasks_G[TASK_INDEX].pTask == NULL) {
         // No task at this location...
         // Set the global error variable
         Error_code_G = ERROR_SCH_CANNOT_DELETE_TASK;
 
         // ...also return an error code
         Return_code = RETURN_ERROR;
+        return Return_code;
     } else {
         Return_code = RETURN_NORMAL;
     }
 
-    SCH_tasks_G[TASK_INDEX].pTask  = 0x0000;
+    SCH_tasks_G[TASK_INDEX].pTask  = NULL;
     SCH_tasks_G[TASK_INDEX].Delay  = 0;
     SCH_tasks_G[TASK_INDEX].Period = 0;
     SCH_tasks_G[TASK_INDEX].RunMe  = 0;
+    SCH_tasks_G[TASK_INDEX].TaskID = -1;
+    numberOfTask--;
 
     return Return_code; // return status
 }
@@ -147,11 +164,10 @@ void SCH_Dispatch_Tasks(void) {
     // Dispatches (runs) the next task (if one is ready)
     for (Index = 0; Index < SCH_MAX_TASKS; Index++) {
         if (SCH_tasks_G[Index].RunMe > 0) {
+        	SCH_tasks_G[Index].RunMe -= 1;   // Reset / reduce RunMe flag
             (*SCH_tasks_G[Index].pTask)();   // Run the task
-//            get_time();
-            if (SCH_tasks_G[Index].pTask != get_time && SCH_tasks_G[Index].pTask != button_reading && SCH_tasks_G[Index].pTask != fsm_for_input_processing)
-            	printf("Task %d finished at: %d0 ms\r\n", Index, timer2);
-            SCH_tasks_G[Index].RunMe -= 1;   // Reset / reduce RunMe flag
+
+
             // Periodic tasks will automatically run again
             // - if this is a 'one shot' task, remove it from the array
             if (SCH_tasks_G[Index].Period == 0) {
@@ -161,7 +177,7 @@ void SCH_Dispatch_Tasks(void) {
     }
 
     // Report system status
-    SCH_Report_Status();
+//    SCH_Report_Status();
 
     // The scheduler enters idle mode at this point
 //     SCH_Go_To_Sleep();
@@ -174,7 +190,7 @@ void SCH_Go_To_Sleep(void) {
 
     // Kiểm tra cho array-based scheduler
     for (unsigned char i = 0; i < SCH_MAX_TASKS; i++) {
-        if (SCH_tasks_G[i].pTask != 0 && SCH_tasks_G[i].RunMe > 0) {
+        if (SCH_tasks_G[i].pTask != NULL && SCH_tasks_G[i].RunMe > 0) {
             hasPendingTasks = 1;
             break;
         }
@@ -207,13 +223,13 @@ void SCH_Update(void) {
             pHead->RunMe += 1;
         }
     }
-    HAL_IWDG_Refresh(&hiwdg);
+//    HAL_IWDG_Refresh(&hiwdg);
 }
 unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int PERIOD) {
     unsigned char Index = 0;
 
     // 1. Tìm một slot trống trong mảng
-    while ((SCH_tasks_G[Index].pTask != 0) && (Index < SCH_MAX_TASKS)) {
+    while ((SCH_tasks_G[Index].pTask != NULL) && (Index < SCH_MAX_TASKS)) {
         Index++;
     }
 
@@ -293,28 +309,22 @@ unsigned char SCH_Add_Task(void (*pFunction)(), unsigned int DELAY, unsigned int
 }
 
 void SCH_Dispatch_Tasks(void) {
-    // Chạy tất cả các task ở đầu danh sách mà có RunMe > 0
-    // (Xử lý trường hợp nhiều task chạy cùng 1 tick)
+
     while (pHead != NULL && pHead->RunMe > 0) {
 
-        sTask* pTaskToRun = pHead; // Lấy task đầu tiên
+        sTask* pTaskToRun = pHead;
 
-        // Lưu lại thông tin task TRƯỚC KHI xóa
         void (*pFunction)(void) = pTaskToRun->pTask;
         uint32_t Period = pTaskToRun->Period;
         uint8_t TaskID = pTaskToRun->TaskID;
-        // 1. Chạy task
         pHead->RunMe--;
         (*pFunction)();
-        if (pFunction != timer_run && pFunction != get_time && pFunction != button_reading && pFunction != fsm_for_input_processing && pFunction != updateSegBuffer)
-                    	printf("Task %d finished at: %d0 ms\r\n", TaskID, timer2);
+//        if (pFunction != timer_run && pFunction != get_time && pFunction != button_reading && pFunction != fsm_for_input_processing && pFunction != updateSegBuffer)
+//                    	printf("Task %d finished at: %d0 ms\r\n", TaskID, timer2);
 
-        // 2. Xóa task khỏi danh sách (hàm này sẽ tự cập nhật pHead)
         SCH_Delete_Task(TaskID);
 
-        // 3. Nếu nó là periodic, thêm nó trở lại danh sách
         if (Period > 0) {
-            // Dùng hàm SCH_Add_Task để nó tự chèn vào đúng vị trí
             SCH_Add_Task(pFunction, Period, Period);
         }
     }
@@ -327,14 +337,11 @@ void SCH_Dispatch_Tasks(void) {
 void SCH_Go_To_Sleep(void) {
     uint8_t hasPendingTasks = 0;
 
-    // Kiểm tra cho linked list scheduler
     if (pHead != NULL && pHead->RunMe > 0) {
         hasPendingTasks = 1;
     }
-    // Chỉ vào sleep nếu không có task nào cần chạy ngay
     if (!hasPendingTasks) {
-        // Có thể thêm delay ngắn để tránh vào/ra sleep liên tục
-        // HAL_Delay(1); // Tùy chọn
+        // HAL_Delay(1);
         __WFI();
     }
 }
@@ -342,16 +349,14 @@ void SCH_Go_To_Sleep(void) {
 //====================================================================
 
 unsigned char SCH_Delete_Task(const uint8_t TASK_INDEX) {
-    if (TASK_INDEX >= SCH_MAX_TASKS || SCH_tasks_G[TASK_INDEX].pTask == 0) {
-        // Task không tồn tại
+    if (TASK_INDEX >= SCH_MAX_TASKS || SCH_tasks_G[TASK_INDEX].pTask == NULL) {
         Error_code_G = ERROR_SCH_CANNOT_DELETE_TASK;
         return RETURN_ERROR;
     }
 
     sTask* pTaskToDelete = &SCH_tasks_G[TASK_INDEX];
 
-    // 1. Cập nhật deltaDelay của task *phía sau* (nếu có)
-    // Task phía sau sẽ gánh thêm phần deltaDelay của task bị xóa
+
     if (pTaskToDelete->pNext != NULL) {
         pTaskToDelete->pNext->deltaDelay += pTaskToDelete->deltaDelay;
     }
@@ -374,7 +379,7 @@ unsigned char SCH_Delete_Task(const uint8_t TASK_INDEX) {
     }
 
     // 3. Xóa dữ liệu task trong mảng (làm cho slot này "trống")
-    pTaskToDelete->pTask = 0x0000;
+    pTaskToDelete->pTask = NULL;
     pTaskToDelete->Delay = 0;
     pTaskToDelete->Period = 0;
     pTaskToDelete->RunMe = 0;
@@ -395,7 +400,7 @@ void SCH_Report_Status(void) {
 //        Error_port = 255 - Error_code_G;
         Last_error_code_G = Error_code_G;
         if (Error_code_G != 0) {
-            Error_tick_count_G = 60000;
+            Error_tick_count_G = 1000;
         } else {
             Error_tick_count_G = 0;
         }

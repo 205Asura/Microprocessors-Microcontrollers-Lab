@@ -63,6 +63,13 @@ void LED_A0_BLINK()
 	GPIOA->ODR ^= LED_A0_Pin;
 
 }
+
+void LED_RED_BLINK()
+{
+	GPIOA->ODR ^= LED_RED_Pin;
+
+}
+
 void updateSegBuffer()
 {
 
