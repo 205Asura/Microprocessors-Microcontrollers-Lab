@@ -105,6 +105,8 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   uint32_t ADC_value = 0;
+  static uint32_t current_time = 0;
+  static uint32_t prev_time = 0;
   while (1)
   {
     /* USER CODE END WHILE */
@@ -115,6 +117,13 @@ int main(void)
 		  buffer_flag = 0;
 	  }
 	  uart_communication_fsm();
+
+	  current_time = HAL_GetTick();
+	  if (current_time - prev_time >= 500)
+	  {
+		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		  prev_time = current_time;
+	  }
 
 	  // Blinky LED
 //	  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
