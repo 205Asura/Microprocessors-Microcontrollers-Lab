@@ -5,11 +5,13 @@
 
 uint8_t temp = 0;
 uint8_t buffer[MAX_BUFFER_SIZE];
-uint8_t index_buffer = 0;
-uint8_t buffer_flag = 0;
+uint8_t index_buffer = 0; // the index in buffer to be write in
+uint8_t buffer_flag = 0; // flag to indicate if a char is transmit through uart
 
 CommandType command_flag = CMD_IDLE;
 uint8_t command_data[MAX_BUFFER_SIZE];
+CMDState cmd_state = CMD_BEFORE;
+
 
 // UART communication FSM variables
 
@@ -18,6 +20,21 @@ UARTState uart_state = UART_IDLE;
 uint32_t timeout_counter = 0;
 uint32_t adc_value = 0;
 uint32_t last_adc_value = 0;
+
+const char* get_state_name(CMDState s) {
+    switch (s) {
+        case CMD_BEFORE: return "BEFORE";
+        case CMD_START:  return "START";
+        case CMD_O:      return "O";
+        case CMD_K:      return "K";
+        case CMD_R:      return "R";
+        case CMD_S:      return "S";
+        case CMD_T:      return "T";
+//        case CMD_END:    return "END";
+        case CMD_WRONG:  return "WRONG";
+        default:         return "UNKNOWN";
+    }
+}
 
 extern ADC_HandleTypeDef hadc1;
 
@@ -36,277 +53,245 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
         HAL_UART_Receive_IT(&huart2, &temp, 1);
     }
 }
-// this version when i type !OK$ and delete $, and type # its unknown
+
+
 void command_parser_fsm(void) {
-    static uint8_t cmd_buffer[10];  // Giới hạn độ dài command ngắn (đủ cho !RST# hoặc !OK#)
+    static char cmd_buffer[10];
     static uint8_t cmd_index = 0;
-    static uint8_t in_command = 0;
+    static CMDState cmd_state = CMD_BEFORE;
+    static CMDState prev_correct_state = CMD_BEFORE;
+    static uint8_t wrong_count = 0;
 
     if (index_buffer == 0 || buffer_flag == 0) return;
 
     for (int i = 0; i < index_buffer; i++) {
         uint8_t c = buffer[i];
 
-        // Bỏ qua \r, \n, khoảng trắng (noise từ terminal)
-        if (c == '\r' || c == '\n' || c == ' ') continue;
+        switch (cmd_state) {
 
-        if (!in_command) {
+        case CMD_BEFORE:
             if (c == '!') {
-                in_command = 1;
                 cmd_index = 0;
+                memset(cmd_buffer, 0, sizeof(cmd_buffer));
                 cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_START;
+                prev_correct_state = CMD_START;
+                wrong_count = 0;
             }
-        } else {
-            // Xử lý backspace (0x08 hoặc 0x7F)
+            break;
+
+        case CMD_START:
             if (c == 0x08 || c == 0x7F) {
-                if (cmd_index > 1) {  // Giữ lại '!' đầu tiên
+                if (cmd_index > 0) {
                     cmd_index--;
-                }
-                continue;  // Không thêm backspace vào buffer
-            }
-
-            // Chỉ chấp nhận ký tự hợp lệ: A-Z, a-z, 0-9, '#'
-            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
-                (c >= '0' && c <= '9') || c == '#') {
-                if (cmd_index >= sizeof(cmd_buffer) - 1) {
-                    // Overflow: reset
-                    in_command = 0;
-                    cmd_index = 0;
-                    continue;
-                }
-                cmd_buffer[cmd_index++] = c;
-
-                if (c == '#') {
                     cmd_buffer[cmd_index] = '\0';
-
-                    // So sánh case-sensitive (chỉ chấp nhận chữ hoa)
-                    if (cmd_index == 5 &&
-                        (cmd_buffer[1] == 'R') &&
-                        (cmd_buffer[2] == 'S') &&
-                        (cmd_buffer[3] == 'T')) {
-                        command_flag = CMD_RTS;
-                    } else if (cmd_index == 4 &&
-                               (cmd_buffer[1] == 'O') &&
-                               (cmd_buffer[2] == 'K')) {
-                        command_flag = CMD_OK;
-                    } else {
-                        // Không hiển thị unknown, chỉ reset flag nếu cần
-                    }
-
-                    in_command = 0;
-                    cmd_index = 0;
-                    break;  // Thoát sau khi xử lý 1 command
                 }
-            } else {
-                // Ký tự không hợp lệ: bỏ qua
+                if (cmd_index == 0) {
+                    cmd_state = CMD_BEFORE;
+                    prev_correct_state = CMD_BEFORE;
+                }
+                break;
             }
+
+            if (c == '#') {
+				// ✅ Kết thúc command sai
+				cmd_buffer[cmd_index++] = c;
+				cmd_buffer[cmd_index] = '\0';
+
+				char msg[50];
+				sprintf(msg, "\r\nUnknown command: %s\r\n", cmd_buffer);
+				HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+
+				// ✅ Reset toàn bộ để user gõ lại
+				cmd_state = CMD_BEFORE;
+				cmd_index = 0;
+				wrong_count = 0;
+				memset(cmd_buffer, 0, sizeof(cmd_buffer));
+
+			}
+            else
+            if (c == 'O') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_O;
+                prev_correct_state = CMD_O;
+            } else if (c == 'R') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_R;
+                prev_correct_state = CMD_R;
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_WRONG;
+                wrong_count = 1;
+            }
+            break;
+
+        case CMD_O:
+            if (c == 0x08 || c == 0x7F) {
+                if (cmd_index > 0) {
+                    cmd_index--;
+                    cmd_buffer[cmd_index] = '\0';
+                }
+                cmd_state = CMD_START;
+                prev_correct_state = CMD_START;
+                break;
+            }
+            if (c == 'K') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_K;
+                prev_correct_state = CMD_K;
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_WRONG;
+                wrong_count = 1;
+            }
+            break;
+
+        case CMD_K:
+            if (c == 0x08 || c == 0x7F) {
+                if (cmd_index > 0) {
+                    cmd_index--;
+                    cmd_buffer[cmd_index] = '\0';
+                }
+                cmd_state = CMD_O;
+                prev_correct_state = CMD_O;
+                break;
+            }
+            if (c == '#') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_buffer[cmd_index] = '\0';
+
+                // ✅ In ra lệnh hợp lệ
+                char msg[40];
+                sprintf(msg, "\r\nReceived Command: %s\r\n", cmd_buffer);
+                HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+
+                // ✅ Đặt flag tương ứng
+                command_flag = CMD_OK;
+
+                // Reset hoàn toàn
+                cmd_state = CMD_BEFORE;
+                cmd_index = 0;
+                memset(cmd_buffer, 0, sizeof(cmd_buffer));
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_WRONG;
+                wrong_count = 1;
+            }
+            break;
+
+        case CMD_R:
+            if (c == 0x08 || c == 0x7F) {
+                if (cmd_index > 0) {
+                    cmd_index--;
+                    cmd_buffer[cmd_index] = '\0';
+                }
+                cmd_state = CMD_START;
+                prev_correct_state = CMD_START;
+                break;
+            }
+            if (c == 'S') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_S;
+                prev_correct_state = CMD_S;
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_WRONG;
+                wrong_count = 1;
+            }
+            break;
+
+        case CMD_S:
+            if (c == 0x08 || c == 0x7F) {
+                if (cmd_index > 0) {
+                    cmd_index--;
+                    cmd_buffer[cmd_index] = '\0';
+                }
+                cmd_state = CMD_R;
+                prev_correct_state = CMD_R;
+                break;
+            }
+            if (c == 'T') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_T;
+                prev_correct_state = CMD_T;
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_WRONG;
+                wrong_count = 1;
+            }
+            break;
+
+        case CMD_T:
+            if (c == 0x08 || c == 0x7F) {
+                if (cmd_index > 0) {
+                    cmd_index--;
+                    cmd_buffer[cmd_index] = '\0';
+                }
+                cmd_state = CMD_S;
+                prev_correct_state = CMD_S;
+                break;
+            }
+            if (c == '#') {
+                cmd_buffer[cmd_index++] = c;
+                cmd_buffer[cmd_index] = '\0';
+
+                // ✅ In ra lệnh hợp lệ
+                char msg[40];
+                sprintf(msg, "\r\nReceived Command: %s\r\n", cmd_buffer);
+                HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+
+                // ✅ Gán flag
+                command_flag = CMD_RTS;
+
+                // Reset hoàn toàn
+                cmd_state = CMD_BEFORE;
+                cmd_index = 0;
+                memset(cmd_buffer, 0, sizeof(cmd_buffer));
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                cmd_state = CMD_WRONG;
+                wrong_count = 1;
+            }
+            break;
+
+        case CMD_WRONG:
+            if (c == 0x08 || c == 0x7F) {
+                if (wrong_count > 0)
+                	{
+                		cmd_index--;
+                	    cmd_buffer[cmd_index] = '\0';
+                		wrong_count--;
+                	}
+                if (wrong_count == 0) {
+                    cmd_state = prev_correct_state;
+                }
+            } else if (c == '#') {
+                // ✅ Kết thúc command sai
+                cmd_buffer[cmd_index++] = c;
+                cmd_buffer[cmd_index] = '\0';
+
+                char msg[50];
+                sprintf(msg, "\r\nUnknown command: %s\r\n", cmd_buffer);
+                HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 100);
+
+                // ✅ Reset toàn bộ để user gõ lại
+                cmd_state = CMD_BEFORE;
+                cmd_index = 0;
+                wrong_count = 0;
+                memset(cmd_buffer, 0, sizeof(cmd_buffer));
+            } else {
+            	cmd_buffer[cmd_index++] = c;
+                wrong_count++;
+            }
+            break;
         }
     }
 
     index_buffer = 0;
-    buffer_flag = 0;  // Reset flag
-    memset(buffer, 0, MAX_BUFFER_SIZE);  // Xóa buffer để tránh rác
+    buffer_flag = 0;
+    memset(buffer, 0, MAX_BUFFER_SIZE);
 }
 
-// This version is error when use backspace
-//void command_parser_fsm(void) {
-//    static uint8_t cmd_buffer[MAX_BUFFER_SIZE];
-//    static uint8_t cmd_index = 0;
-//    static uint8_t in_command = 0;
-//
-//    if (index_buffer == 0 || buffer_flag == 0) return;
-//
-//    for (int i = 0; i < index_buffer; i++) {
-//        uint8_t c = buffer[i];
-//
-//        if (c == '\r' || c == '\n') continue; // Bỏ ký tự xuống dòng
-//
-//        if (!in_command) {
-//            if (c == '!') {
-//                in_command = 1;
-//                cmd_index = 0;
-//                cmd_buffer[cmd_index++] = c;
-//            }
-//        }
-//        else {
-//            cmd_buffer[cmd_index++] = c;
-//
-//            if (c == '#') {
-//                cmd_buffer[cmd_index] = '\0';
-//
-//                char received_msg[60];
-//                sprintf(received_msg, "\r\nCommand received: %s\r\n", cmd_buffer);
-//                HAL_UART_Transmit(&huart2, (uint8_t*)received_msg, strlen(received_msg), 100);
-//
-//                if (strcmp((char*)cmd_buffer, "!RST#") == 0) {
-//                    command_flag = CMD_RTS;
-//                } else if (strcmp((char*)cmd_buffer, "!OK#") == 0) {
-//                    command_flag = CMD_OK;
-//                } else {
-//                    char debug_msg[52];
-//                    sprintf(debug_msg, "\r\nUnknown command: %s\r\n", cmd_buffer);
-//                    HAL_UART_Transmit(&huart2, (uint8_t*)debug_msg, strlen(debug_msg), 100);
-//                }
-//
-//                in_command = 0;
-//                cmd_index = 0;
-//            }
-//
-//            // Tràn buffer hoặc nhận ký tự không hợp lệ
-//            else if (cmd_index >= MAX_BUFFER_SIZE - 1) {
-//                in_command = 0;
-//                cmd_index = 0;
-//            }
-//        }
-//    }
-//
-//    index_buffer = 0;
-////    buffer_flag = 0;
-//}
-
-// DEBUG VERSION
-//void command_parser_fsm(void) {
-//    static uint8_t cmd_buffer[MAX_BUFFER_SIZE];
-//    static uint8_t cmd_index = 0;
-//    static uint8_t in_command = 0;
-//
-//    if (index_buffer == 0 || buffer_flag == 0) return;
-//
-//    // DEBUG: Hiển thị buffer nhận được
-//    char debug_msg[100];
-//    sprintf(debug_msg, "\r\nDEBUG Buffer (%d bytes): [", index_buffer);
-//    HAL_UART_Transmit(&huart2, (uint8_t*)debug_msg, strlen(debug_msg), 100);
-//
-//    for(int j = 0; j < index_buffer; j++) {
-//        if(buffer[j] >= 32 && buffer[j] <= 126) {
-//            sprintf(debug_msg, "%c", buffer[j]);
-//        } else {
-//            sprintf(debug_msg, "\\x%02X", buffer[j]);
-//        }
-//        HAL_UART_Transmit(&huart2, (uint8_t*)debug_msg, strlen(debug_msg), 100);
-//    }
-//    HAL_UART_Transmit(&huart2, (uint8_t*)"]\r\n", 3, 100);
-//
-//    for (int i = 0; i < index_buffer; i++) {
-//        uint8_t c = buffer[i];
-//
-//        if (c == '\r' || c == '\n') continue;
-//
-//        if (!in_command) {
-//            if (c == '!') {
-//                in_command = 1;
-//                cmd_index = 0;
-//                cmd_buffer[cmd_index++] = c;
-//            }
-//        }
-//        else {
-//            cmd_buffer[cmd_index++] = c;
-//
-//            if (c == '#') {
-//                cmd_buffer[cmd_index] = '\0';
-//
-//                char received_msg[70];
-//                sprintf(received_msg, "\r\nCommand received: [%s] (length=%d)\r\n", cmd_buffer, cmd_index);
-//                HAL_UART_Transmit(&huart2, (uint8_t*)received_msg, strlen(received_msg), 100);
-//
-//                // So sánh CHÍNH XÁC với độ dài
-//                if (cmd_index == 5 && strcmp((char*)cmd_buffer, "!RST#") == 0) {
-//                    command_flag = CMD_RTS;
-//                    HAL_UART_Transmit(&huart2, (uint8_t*)"-> Valid !RST#\r\n", 16, 100);
-//                } else if (cmd_index == 4 && strcmp((char*)cmd_buffer, "!OK#") == 0) {
-//                    command_flag = CMD_OK;
-//                    HAL_UART_Transmit(&huart2, (uint8_t*)"-> Valid !OK#\r\n", 15, 100);
-//                } else {
-//                    char debug_msg[90];
-//                    sprintf(debug_msg, "-> Unknown command: [%s] (expected length: !RST#=5, !OK#=4)\r\n", cmd_buffer);
-//                    HAL_UART_Transmit(&huart2, (uint8_t*)debug_msg, strlen(debug_msg), 100);
-//                }
-//
-//                in_command = 0;
-//                cmd_index = 0;
-//                break; // Quan trọng: thoát sau khi xử lý command
-//            }
-//
-//            else if (cmd_index >= MAX_BUFFER_SIZE - 1) {
-//                in_command = 0;
-//                cmd_index = 0;
-//            }
-//        }
-//    }
-//
-//    index_buffer = 0;
-//    buffer_flag = 0;  // Bỏ comment dòng này
-//}
-
-
-// This version is good but !\n\nOK# is still valid
-//void command_parser_fsm(void) {
-//    static uint8_t cmd[10];
-//    static uint8_t idx = 0;
-//    static uint8_t collecting = 0;
-//
-//    if (!buffer_flag) return;
-//
-//    for (int i = 0; i < index_buffer; i++) {
-//        uint8_t c = buffer[i];
-//
-//        if (!collecting && c == '!') {
-//            collecting = 1;
-//            idx = 0;
-//            cmd[idx++] = c;
-//        }
-//        else if (collecting) {
-//            // XỬ LÝ BACKSPACE (0x08 hoặc 0x7F)
-//            if (c == 0x08 || c == 0x7F) {
-//                if (idx > 1) { // Giữ lại ký tự '!' đầu tiên
-//                    idx--;
-//                }
-//            }
-//            // CHỈ chấp nhận ký tự hợp lệ cho command
-//            else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
-//                     (c >= '0' && c <= '9') || c == '#') {
-//                cmd[idx++] = c;
-//
-//                if (c == '#') {
-//                    cmd[idx] = '\0';
-//
-//                    // HIỆN COMMAND
-//                    HAL_UART_Transmit(&huart2, (uint8_t*)"Command: ", 9, 100);
-//                    HAL_UART_Transmit(&huart2, cmd, idx, 100);
-//                    HAL_UART_Transmit(&huart2, (uint8_t*)"\r\n", 2, 100);
-//
-//                    // SO SÁNH (case-insensitive)
-//                    if (idx == 5 &&
-//                        (cmd[1]=='R' || cmd[1]=='r') &&
-//                        (cmd[2]=='S' || cmd[2]=='s') &&
-//                        (cmd[3]=='T' || cmd[3]=='t')) {
-//                        command_flag = CMD_RTS;
-//                    }
-//                    else if (idx == 4 &&
-//                             (cmd[1]=='O' || cmd[1]=='o') &&
-//                             (cmd[2]=='K' || cmd[2]=='k')) {
-//                        command_flag = CMD_OK;
-//                    }
-//                    else {
-//                        HAL_UART_Transmit(&huart2, (uint8_t*)"Unknown\r\n", 9, 100);
-//                    }
-//
-//                    collecting = idx = 0;
-//                    index_buffer = buffer_flag = 0;
-//                    memset(buffer, 0, MAX_BUFFER_SIZE);
-//                    return;
-//                }
-//                else if (idx >= 9) {
-//                    collecting = idx = 0;
-//                }
-//            }
-//            // Bỏ qua các ký tự khác (khoảng trắng, ký tự đặc biệt, v.v.)
-//        }
-//    }
-//
-//    index_buffer = buffer_flag = 0;
-//    memset(buffer, 0, MAX_BUFFER_SIZE);
-//}
 
 
 

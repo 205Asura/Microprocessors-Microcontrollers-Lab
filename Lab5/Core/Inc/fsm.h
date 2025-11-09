@@ -30,6 +30,20 @@ typedef enum {
 	UART_COMM_COMPLETE
 } UARTState;
 
+typedef enum {
+	CMD_BEFORE,
+	CMD_START,
+	CMD_WRONG,
+	CMD_O,
+	CMD_K,
+	CMD_R,
+	CMD_S,
+	CMD_T,
+//	CMD_END
+} CMDState;
+
+extern CMDState cmd_state;
+
 extern UARTState uart_state;
 extern uint32_t timeout_counter;
 extern uint32_t adc_value;

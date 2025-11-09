@@ -1,3 +1,4 @@
-../Core/Src/fsm.c:27:6:HAL_UART_RxCpltCallback	16	static
-../Core/Src/fsm.c:40:6:command_parser_fsm	16	static
-../Core/Src/fsm.c:313:6:uart_communication_fsm	64	static
+../Core/Src/fsm.c:24:13:get_state_name	16	static
+../Core/Src/fsm.c:44:6:HAL_UART_RxCpltCallback	16	static
+../Core/Src/fsm.c:58:6:command_parser_fsm	64	static
+../Core/Src/fsm.c:298:6:uart_communication_fsm	64	static
