@@ -225,7 +225,7 @@ int main(void)
 		  update7SEG(led_index++);
 		  if (led_index == 4)
 			led_index = 0;
-		  setTimer1(250);
+		  setTimer1(100);
 	  }
 	  if (timer0_flag == 1)
 	  {
